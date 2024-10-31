@@ -11,7 +11,6 @@ import {
 } from "@metaplex-foundation/mpl-token-metadata";
 import { generateSigner, percentAmount } from "@metaplex-foundation/umi";
 import { base58 } from "@metaplex-foundation/umi/serializers";
-
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,16 +84,26 @@ export default function NFTMinter() {
       );
 
       const imageHash = pinataImageResponse.data.IpfsHash;
-      const imageUrl = `ipfs://${imageHash}`;
+      const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
       setImageUrl(imageUrl);
       console.log("Image uploaded to IPFS at:", imageUrl);
 
       // Step 2: Upload Metadata to Pinata
       const metadata = {
-        name,
-        description,
-        symbol,
-        image: imageUrl,
+        name: name,
+        symbol: symbol,
+        description: description,
+        image: imageUrl, // Gateway URL for accessibility
+        attributes: [
+          {
+            trait_type: "What is he",
+            value: "A business student LOOOLLL",
+          },
+        ],
+        properties: {
+          files: [{ uri: imageUrl, type: image.type }],
+          category: "image",
+        },
       };
 
       const pinataMetadataResponse = await axios.post(
@@ -110,7 +119,7 @@ export default function NFTMinter() {
       );
 
       const metadataHash = pinataMetadataResponse.data.IpfsHash;
-      const metadataUri = `ipfs://${metadataHash}`;
+      const metadataUri = `https://gateway.pinata.cloud/ipfs/${metadataHash}`;
       setMetadataUri(metadataUri);
       console.log("Metadata uploaded to IPFS at:", metadataUri);
 
@@ -223,27 +232,13 @@ export default function NFTMinter() {
               </p>
               <p>
                 <strong>Image URL:</strong>{" "}
-                <a
-                  href={`https://gateway.pinata.cloud/ipfs/${imageUrl.replace(
-                    "ipfs://",
-                    ""
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={imageUrl} target="_blank" rel="noopener noreferrer">
                   View Image on IPFS
                 </a>
               </p>
               <p>
                 <strong>Metadata URL:</strong>{" "}
-                <a
-                  href={`https://gateway.pinata.cloud/ipfs/${metadataUri.replace(
-                    "ipfs://",
-                    ""
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={metadataUri} target="_blank" rel="noopener noreferrer">
                   View Metadata on IPFS
                 </a>
               </p>
