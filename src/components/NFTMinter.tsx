@@ -4,20 +4,15 @@ import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import {
   createNft,
-  fetchDigitalAsset,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
-import {
-  createGenericFile,
-  generateSigner,
-  percentAmount,
-} from "@metaplex-foundation/umi";
+import { generateSigner, percentAmount } from "@metaplex-foundation/umi";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,8 +25,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import fs from "fs";
-import path from "path";
 
 export default function NFTMinter() {
   const { publicKey, wallet } = useWallet();
@@ -40,6 +33,9 @@ export default function NFTMinter() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [isMinting, setIsMinting] = useState(false);
+  const [transactionLink, setTransactionLink] = useState("");
+  const [metadataUri, setMetadataUri] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const { toast } = useToast();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,99 +65,72 @@ export default function NFTMinter() {
     setIsMinting(true);
 
     try {
-      // Step 1: Set up Umi and register mplTokenMetadata
-      const umi = createUmi("https://api.devnet.solana.com")
-        .use(mplTokenMetadata()) // Ensure mpl-token-metadata is registered
-        .use(irysUploader({ address: "https://devnet.irys.xyz" }))
-        .use(walletAdapterIdentity(wallet.adapter)); // Use wallet.adapter here
+      // Step 1: Upload Image to Pinata
+      const pinataApiKey = process.env.PINATA_API_KEY;
+      const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY;
 
-      const imageArrayBuffer = await image.arrayBuffer();
-      const imageUint8Array = new Uint8Array(imageArrayBuffer);
+      const formData = new FormData();
+      formData.append("file", image);
 
-      // Use `createGenericFile` to transform the file into a `GenericFile` type
-      // that umi can understand. Make sure you set the mimi tag type correctly
-      // otherwise Arweave will not know how to display your image.
+      const pinataImageResponse = await axios.post(
+        "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        formData,
+        {
+          headers: {
+            pinata_api_key: pinataApiKey,
+            pinata_secret_api_key: pinataSecretApiKey,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-      const umiImageFile = createGenericFile(imageUint8Array, image.name, {
-        tags: [{ name: "Content-Type", value: "image/jpg" }],
-      });
+      const imageHash = pinataImageResponse.data.IpfsHash;
+      const imageUrl = `ipfs://${imageHash}`;
+      setImageUrl(imageUrl);
+      console.log("Image uploaded to IPFS at:", imageUrl);
 
-      // Here we upload the image to Arweave via Irys and we get returned a uri
-      // address where the file is located. You can log this out but as the
-      // uploader can takes an array of files it also returns an array of uris.
-      // To get the uri we want we can call index [0] in the array.
-
-      console.log("Uploading image...");
-      const imageUri = await umi.uploader.upload([umiImageFile]);
-
-      console.log("Image uploaded to:", imageUri);
-
-      //
-      // ** Upload Metadata to Arweave **
-      //
-
+      // Step 2: Upload Metadata to Pinata
       const metadata = {
-        name: name,
-        description: description,
-        image: imageUri[0],
-        symbol: symbol,
-        //external_url: "https://example.com",
-        attributes: [
-          {
-            trait_type: "difficulty",
-            value: "impossible",
-          },
-          {
-            trait_type: "satisfaction",
-            value: "guaranteed",
-          },
-        ],
-        properties: {
-          files: [
-            {
-              uri: imageUri[0],
-              type: "image/jpeg",
-            },
-          ],
-          category: "image",
-        },
+        name,
+        description,
+        symbol,
+        image: imageUrl,
       };
 
-      // Call upon umi's uploadJson function to upload our metadata to Arweave via Irys.
-      console.log("Uploading metadata...");
-      const metadataUri = await umi.uploader.uploadJson(metadata);
+      const pinataMetadataResponse = await axios.post(
+        "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+        metadata,
+        {
+          headers: {
+            pinata_api_key: pinataApiKey,
+            pinata_secret_api_key: pinataSecretApiKey,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      //
-      // ** Creating the Nft **
-      //
+      const metadataHash = pinataMetadataResponse.data.IpfsHash;
+      const metadataUri = `ipfs://${metadataHash}`;
+      setMetadataUri(metadataUri);
+      console.log("Metadata uploaded to IPFS at:", metadataUri);
 
-      // We generate a signer for the Nft
+      // Step 3: Mint NFT using the Metadata URI
+      const umi = createUmi("https://api.devnet.solana.com")
+        .use(mplTokenMetadata())
+        .use(walletAdapterIdentity(wallet.adapter));
+
       const nftSigner = generateSigner(umi);
 
-      // Decide on a ruleset for the Nft.
-      const ruleset = null;
-
-      console.log("Creating Nft...");
       const tx = await createNft(umi, {
         mint: nftSigner,
         sellerFeeBasisPoints: percentAmount(0),
         name: metadata.name,
         uri: metadataUri,
-        ruleSet: ruleset,
       }).sendAndConfirm(umi);
 
-      // Finally we can deserialize the signature that we can check on chain.
       const signature = base58.deserialize(tx.signature)[0];
-
-      // Log out the signature and the links to the transaction and the NFT.
-      console.log("\npNFT Created");
-      console.log("View Transaction on Solana Explorer");
-      console.log(`https://explorer.solana.com/tx/${signature}?cluster=devnet`);
-      console.log("\n");
-      console.log("View NFT on Metaplex Explorer");
-      console.log(
-        `https://explorer.solana.com/address/${nftSigner.publicKey}?cluster=devnet`
-      );
+      const transactionLink = `https://explorer.solana.com/tx/${signature}?cluster=devnet`;
+      setTransactionLink(transactionLink);
 
       toast({
         title: "NFT minted successfully!",
@@ -238,6 +207,48 @@ export default function NFTMinter() {
           >
             {isMinting ? "Minting..." : "Mint NFT"}
           </Button>
+
+          {/* Display Minted NFT Details */}
+          {transactionLink && (
+            <div className="mt-4">
+              <p>
+                <strong>Transaction Link:</strong>{" "}
+                <a
+                  href={transactionLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View on Solana Explorer
+                </a>
+              </p>
+              <p>
+                <strong>Image URL:</strong>{" "}
+                <a
+                  href={`https://gateway.pinata.cloud/ipfs/${imageUrl.replace(
+                    "ipfs://",
+                    ""
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Image on IPFS
+                </a>
+              </p>
+              <p>
+                <strong>Metadata URL:</strong>{" "}
+                <a
+                  href={`https://gateway.pinata.cloud/ipfs/${metadataUri.replace(
+                    "ipfs://",
+                    ""
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Metadata on IPFS
+                </a>
+              </p>
+            </div>
+          )}
         </div>
       </CardContent>
       <CardFooter className="flex justify-center">
