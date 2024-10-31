@@ -5,6 +5,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+import { create, mplCore } from "@metaplex-foundation/mpl-core"; // Use mplCore
 import {
   createNft,
   mplTokenMetadata,
@@ -35,6 +36,7 @@ export default function NFTMinter() {
   const [transactionLink, setTransactionLink] = useState("");
   const [metadataUri, setMetadataUri] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [useCore, setUseCore] = useState(false); // Toggle between Core and Token Metadata
   const { toast } = useToast();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +66,7 @@ export default function NFTMinter() {
     setIsMinting(true);
 
     try {
-      // Step 1: Upload Image to Pinata
+      // Step 1: Upload Image to IPFS via Pinata
       const pinataApiKey = process.env.PINATA_API_KEY;
       const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY;
 
@@ -88,22 +90,12 @@ export default function NFTMinter() {
       setImageUrl(imageUrl);
       console.log("Image uploaded to IPFS at:", imageUrl);
 
-      // Step 2: Upload Metadata to Pinata
+      // Step 2: Upload Metadata to IPFS
       const metadata = {
-        name: name,
-        symbol: symbol,
-        description: description,
-        image: imageUrl, // Gateway URL for accessibility
-        attributes: [
-          {
-            trait_type: "What is he",
-            value: "A business student LOOOLLL",
-          },
-        ],
-        properties: {
-          files: [{ uri: imageUrl, type: image.type }],
-          category: "image",
-        },
+        name,
+        description,
+        symbol,
+        image: imageUrl,
       };
 
       const pinataMetadataResponse = await axios.post(
@@ -123,19 +115,29 @@ export default function NFTMinter() {
       setMetadataUri(metadataUri);
       console.log("Metadata uploaded to IPFS at:", metadataUri);
 
-      // Step 3: Mint NFT using the Metadata URI
+      // Step 3: Set up Umi with the selected configuration
       const umi = createUmi("https://api.devnet.solana.com")
-        .use(mplTokenMetadata())
+        .use(useCore ? mplCore() : mplTokenMetadata()) // Toggle between core and token metadata
         .use(walletAdapterIdentity(wallet.adapter));
 
-      const nftSigner = generateSigner(umi);
+      const assetOrMint = generateSigner(umi); // Use `asset` for Core, `mint` for Token Metadata
 
-      const tx = await createNft(umi, {
-        mint: nftSigner,
-        sellerFeeBasisPoints: percentAmount(0),
-        name: metadata.name,
-        uri: metadataUri,
-      }).sendAndConfirm(umi);
+      // Step 4: Mint NFT
+      let tx;
+      if (useCore) {
+        tx = await create(umi, {
+          asset: assetOrMint,
+          name: metadata.name,
+          uri: metadataUri,
+        }).sendAndConfirm(umi);
+      } else {
+        tx = await createNft(umi, {
+          mint: assetOrMint,
+          sellerFeeBasisPoints: percentAmount(0),
+          name: metadata.name,
+          uri: metadataUri,
+        }).sendAndConfirm(umi);
+      }
 
       const signature = base58.deserialize(tx.signature)[0];
       const transactionLink = `https://explorer.solana.com/tx/${signature}?cluster=devnet`;
@@ -143,7 +145,7 @@ export default function NFTMinter() {
 
       toast({
         title: "NFT minted successfully!",
-        description: `Mint address: ${nftSigner.publicKey}`,
+        description: `Mint address: ${assetOrMint.publicKey}`,
       });
 
       setName("");
@@ -167,11 +169,36 @@ export default function NFTMinter() {
       <CardHeader>
         <CardTitle>Mint your NFT</CardTitle>
         <CardDescription>
-          Connect your wallet and fill in the details to mint your NFT.
+          Connect your wallet, choose standard, and fill in the details to mint
+          your NFT.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          <div className="flex space-x-2 justify-between">
+            <Button
+              onClick={() => setUseCore(false)}
+              disabled={!publicKey}
+              className={`w-full ${
+                !useCore
+                  ? "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-gray-200 text-black hover:bg-gray-300"
+              }`}
+            >
+              Use Token Metadata
+            </Button>
+            <Button
+              onClick={() => setUseCore(true)}
+              disabled={!publicKey}
+              className={`w-full ${
+                useCore
+                  ? "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-gray-200 text-black hover:bg-gray-300"
+              }`}
+            >
+              Use Core
+            </Button>
+          </div>
           <div>
             <Label htmlFor="name">Name</Label>
             <Input
