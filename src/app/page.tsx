@@ -1,6 +1,6 @@
 "use client";
 
-import NFTMinter from "@/components/NFTMinter";
+import NFTMinter from "@/components/NFTMinter/NFTMinter";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 export default function Home() {
