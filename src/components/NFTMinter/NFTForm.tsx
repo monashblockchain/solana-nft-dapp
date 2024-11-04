@@ -12,8 +12,8 @@ export default function NFTForm({
   setDescription,
   image,
   setImage,
-  useCore,
-  setUseCore,
+  tokenStandard,
+  setTokenStandard,
   publicKey,
   attributes,
   setAttributes,
@@ -26,26 +26,37 @@ export default function NFTForm({
     <div className="space-y-4">
       <div className="flex space-x-2 justify-between">
         <Button
-          onClick={() => setUseCore(false)}
+          onClick={() => setTokenStandard("Metadata")}
           disabled={!publicKey}
           className={`w-full ${
-            !useCore
+            tokenStandard === "Metadata"
               ? "bg-blue-500 text-white hover:bg-blue-600"
               : "bg-gray-200 text-black hover:bg-gray-300"
           }`}
         >
-          Use Token Metadata
+          Token Metadata
         </Button>
         <Button
-          onClick={() => setUseCore(true)}
+          onClick={() => setTokenStandard("Core")}
           disabled={!publicKey}
           className={`w-full ${
-            useCore
+            tokenStandard === "Core"
               ? "bg-blue-500 text-white hover:bg-blue-600"
               : "bg-gray-200 text-black hover:bg-gray-300"
           }`}
         >
-          Use Core
+          Core
+        </Button>
+        <Button
+          onClick={() => setTokenStandard("Token-2022")}
+          disabled={!publicKey}
+          className={`w-full ${
+            tokenStandard === "Token-2022"
+              ? "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-gray-200 text-black hover:bg-gray-300"
+          }`}
+        >
+          Token-2022
         </Button>
       </div>
 

@@ -23,6 +23,14 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import NFTForm from "./NFTForm";
 import MintInfo from "./MintInfo";
+import { createNftForToken2022 } from "@/lib/createNftForToken2022";
+
+// Define the token standard options
+const TokenStandards = {
+  METADATA: "Metadata",
+  CORE: "Core",
+  TOKEN_2022: "Token-2022",
+};
 
 export default function NFTMinter() {
   const { publicKey, wallet } = useWallet();
@@ -34,8 +42,8 @@ export default function NFTMinter() {
   const [transactionLink, setTransactionLink] = useState("");
   const [metadataUri, setMetadataUri] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [useCore, setUseCore] = useState(false); // Toggle between Core and Token Metadata
-  const [attributes, setAttributes] = useState([{ trait_type: "", value: "" }]);
+  const [tokenStandard, setTokenStandard] = useState(TokenStandards.METADATA); // Single state for token standard selection
+  const [attributes, setAttributes] = useState([]);
   const { toast } = useToast();
 
   const handleMint = async () => {
@@ -106,19 +114,30 @@ export default function NFTMinter() {
       setMetadataUri(metadataUri);
 
       const umi = createUmi("https://api.devnet.solana.com")
-        .use(useCore ? mplCore() : mplTokenMetadata())
+        .use(
+          tokenStandard === TokenStandards.CORE ? mplCore() : mplTokenMetadata()
+        )
         .use(walletAdapterIdentity(wallet.adapter));
 
       const assetOrMint = generateSigner(umi);
 
       let tx;
-      if (useCore) {
+      if (tokenStandard === TokenStandards.TOKEN_2022) {
+        // Token-2022 minting
+        tx = await createNftForToken2022(umi, {
+          name: metadata.name,
+          uri: metadataUri,
+          sellerFeeBasisPoints: percentAmount(0),
+        });
+      } else if (tokenStandard === TokenStandards.CORE) {
+        // Core minting
         tx = await create(umi, {
           asset: assetOrMint,
           name: metadata.name,
           uri: metadataUri,
         }).sendAndConfirm(umi);
       } else {
+        // Default Token Metadata minting
         tx = await createNft(umi, {
           mint: assetOrMint,
           sellerFeeBasisPoints: percentAmount(0),
@@ -172,8 +191,8 @@ export default function NFTMinter() {
           setDescription={setDescription}
           image={image}
           setImage={setImage}
-          useCore={useCore}
-          setUseCore={setUseCore}
+          tokenStandard={tokenStandard}
+          setTokenStandard={setTokenStandard}
           publicKey={publicKey}
           attributes={attributes}
           setAttributes={setAttributes}
