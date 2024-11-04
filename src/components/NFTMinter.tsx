@@ -23,6 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { Trash2 } from "lucide-react";
 
 export default function NFTMinter() {
   const { publicKey, wallet } = useWallet();
@@ -214,6 +215,7 @@ export default function NFTMinter() {
               Use Core
             </Button>
           </div>
+
           <div>
             <Label htmlFor="name">Name</Label>
             <Input
@@ -223,6 +225,7 @@ export default function NFTMinter() {
               required
             />
           </div>
+
           <div>
             <Label htmlFor="symbol">Symbol</Label>
             <Input
@@ -232,6 +235,7 @@ export default function NFTMinter() {
               required
             />
           </div>
+
           <div>
             <Label htmlFor="description">Description</Label>
             <Input
@@ -241,18 +245,9 @@ export default function NFTMinter() {
               required
             />
           </div>
-          <div>
-            <Label htmlFor="image">Image</Label>
-            <Input
-              id="image"
-              type="file"
-              onChange={handleImageChange}
-              accept="image/*"
-              required
-            />
-          </div>
+
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Attributes</h3>
+            <Label htmlFor="attributes">Attributes</Label>
             {attributes.map((attribute, index) => (
               <div key={index} className="flex space-x-2 items-center">
                 <Input
@@ -275,14 +270,30 @@ export default function NFTMinter() {
                   variant="destructive"
                   onClick={() => handleRemoveAttribute(index)}
                 >
-                  Remove
+                  <Trash2 />
                 </Button>
               </div>
             ))}
-            <Button variant="secondary" onClick={handleAddAttribute}>
+            <Button
+              variant="secondary"
+              onClick={handleAddAttribute}
+              className="w-full shadow"
+            >
               Add Attribute
             </Button>
           </div>
+
+          <div>
+            <Label htmlFor="image">Image</Label>
+            <Input
+              id="image"
+              type="file"
+              onChange={handleImageChange}
+              accept="image/*"
+              required
+            />
+          </div>
+
           <Button
             className="w-full"
             onClick={handleMint}
