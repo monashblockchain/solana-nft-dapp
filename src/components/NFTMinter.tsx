@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { create, mplCore } from "@metaplex-foundation/mpl-core"; // Use mplCore
+import { create, mplCore } from "@metaplex-foundation/mpl-core";
 import {
   createNft,
   mplTokenMetadata,
@@ -20,7 +19,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -37,12 +35,28 @@ export default function NFTMinter() {
   const [metadataUri, setMetadataUri] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [useCore, setUseCore] = useState(false); // Toggle between Core and Token Metadata
+  const [attributes, setAttributes] = useState([{ trait_type: "", value: "" }]); // Attribute state
   const { toast } = useToast();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setImage(e.target.files[0]);
     }
+  };
+
+  const handleAttributeChange = (index: number, key: string, value: string) => {
+    const updatedAttributes = [...attributes];
+    updatedAttributes[index][key] = value;
+    setAttributes(updatedAttributes);
+  };
+
+  const handleAddAttribute = () => {
+    setAttributes([...attributes, { trait_type: "", value: "" }]);
+  };
+
+  const handleRemoveAttribute = (index: number) => {
+    const updatedAttributes = attributes.filter((_, i) => i !== index);
+    setAttributes(updatedAttributes);
   };
 
   const handleMint = async () => {
@@ -88,7 +102,6 @@ export default function NFTMinter() {
       const imageHash = pinataImageResponse.data.IpfsHash;
       const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
       setImageUrl(imageUrl);
-      console.log("Image uploaded to IPFS at:", imageUrl);
 
       // Step 2: Upload Metadata to IPFS
       const metadata = {
@@ -96,6 +109,7 @@ export default function NFTMinter() {
         description,
         symbol,
         image: imageUrl,
+        attributes, // Include dynamic attributes in metadata
       };
 
       const pinataMetadataResponse = await axios.post(
@@ -113,14 +127,13 @@ export default function NFTMinter() {
       const metadataHash = pinataMetadataResponse.data.IpfsHash;
       const metadataUri = `https://gateway.pinata.cloud/ipfs/${metadataHash}`;
       setMetadataUri(metadataUri);
-      console.log("Metadata uploaded to IPFS at:", metadataUri);
 
       // Step 3: Set up Umi with the selected configuration
       const umi = createUmi("https://api.devnet.solana.com")
-        .use(useCore ? mplCore() : mplTokenMetadata()) // Toggle between core and token metadata
+        .use(useCore ? mplCore() : mplTokenMetadata())
         .use(walletAdapterIdentity(wallet.adapter));
 
-      const assetOrMint = generateSigner(umi); // Use `asset` for Core, `mint` for Token Metadata
+      const assetOrMint = generateSigner(umi);
 
       // Step 4: Mint NFT
       let tx;
@@ -148,10 +161,12 @@ export default function NFTMinter() {
         description: `Mint address: ${assetOrMint.publicKey}`,
       });
 
+      // Reset form fields after successful mint
       setName("");
       setSymbol("");
       setDescription("");
       setImage(null);
+      setAttributes([{ trait_type: "", value: "" }]); // Reset attributes
     } catch (error) {
       console.error("Error minting NFT:", error);
       toast({
@@ -236,6 +251,38 @@ export default function NFTMinter() {
               required
             />
           </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Attributes</h3>
+            {attributes.map((attribute, index) => (
+              <div key={index} className="flex space-x-2 items-center">
+                <Input
+                  placeholder="Trait Type"
+                  value={attribute.trait_type}
+                  onChange={(e) =>
+                    handleAttributeChange(index, "trait_type", e.target.value)
+                  }
+                  required
+                />
+                <Input
+                  placeholder="Value"
+                  value={attribute.value}
+                  onChange={(e) =>
+                    handleAttributeChange(index, "value", e.target.value)
+                  }
+                  required
+                />
+                <Button
+                  variant="destructive"
+                  onClick={() => handleRemoveAttribute(index)}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button variant="secondary" onClick={handleAddAttribute}>
+              Add Attribute
+            </Button>
+          </div>
           <Button
             className="w-full"
             onClick={handleMint}
@@ -244,7 +291,6 @@ export default function NFTMinter() {
             {isMinting ? "Minting..." : "Mint NFT"}
           </Button>
 
-          {/* Display Minted NFT Details */}
           {transactionLink && (
             <div className="mt-4">
               <p>
