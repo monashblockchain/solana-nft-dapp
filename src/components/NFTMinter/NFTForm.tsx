@@ -38,8 +38,8 @@ export default function NFTForm({
           disabled={!publicKey}
           className={`w-full ${
             tokenStandard === "Metadata"
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "bg-gray-200 text-black hover:bg-gray-300"
+              ? "bg-primary text-primary-foreground hover:bg-primary-dark"
+              : "bg-secondary text-secondary-foreground hover:bg-secondary-dark"
           }`}
         >
           Token Metadata
@@ -49,8 +49,8 @@ export default function NFTForm({
           disabled={!publicKey}
           className={`w-full ${
             tokenStandard === "Core"
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "bg-gray-200 text-black hover:bg-gray-300"
+              ? "bg-primary text-primary-foreground hover:bg-primary-dark"
+              : "bg-secondary text-secondary-foreground hover:bg-secondary-dark"
           }`}
         >
           Core
@@ -60,8 +60,8 @@ export default function NFTForm({
           disabled={!publicKey}
           className={`w-full ${
             tokenStandard === "Token-2022"
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "bg-gray-200 text-black hover:bg-gray-300"
+              ? "bg-primary text-primary-foreground hover:bg-primary-dark"
+              : "bg-secondary text-secondary-foreground hover:bg-secondary-dark"
           }`}
         >
           Token-2022
@@ -75,6 +75,7 @@ export default function NFTForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          className="border-none shadow-md bg-secondary text-secondary-foreground"
         />
       </div>
 
@@ -85,6 +86,7 @@ export default function NFTForm({
           value={symbol}
           onChange={(e) => setSymbol(e.target.value)}
           required
+          className="border-none shadow-md bg-secondary text-secondary-foreground"
         />
       </div>
 
@@ -95,6 +97,7 @@ export default function NFTForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
+          className="border-none shadow-md bg-secondary text-secondary-foreground"
         />
       </div>
 
@@ -108,6 +111,7 @@ export default function NFTForm({
           onChange={handleImageChange}
           accept="image/*"
           required
+          className="bg-secondary text-secondary-foreground border-none shadow py-2"
         />
         {imagePreview && (
           <Image

@@ -31,6 +31,7 @@ export default function AttributeList({ attributes, setAttributes }) {
               handleAttributeChange(index, "trait_type", e.target.value)
             }
             required
+            className="border-none shadow-md bg-secondary text-secondary-foreground"
           />
           <Input
             placeholder="Value"
@@ -39,6 +40,7 @@ export default function AttributeList({ attributes, setAttributes }) {
               handleAttributeChange(index, "value", e.target.value)
             }
             required
+            className="border-none shadow-md bg-secondary text-secondary-foreground"
           />
           <Button
             variant="destructive"
@@ -49,9 +51,9 @@ export default function AttributeList({ attributes, setAttributes }) {
         </div>
       ))}
       <Button
-        variant="secondary"
+        variant="outline"
         onClick={handleAddAttribute}
-        className="w-full shadow"
+        className="w-full shadow border-none"
       >
         Add Attribute
       </Button>
