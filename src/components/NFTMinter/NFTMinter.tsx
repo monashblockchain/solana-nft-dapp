@@ -173,7 +173,7 @@ export default function NFTMinter() {
   };
 
   return (
-    <Card className="max-w-md mx-auto">
+    <Card className="max-w-md mx-auto border-none shadow-lg">
       <CardHeader>
         <CardTitle>Mint your NFT</CardTitle>
         <CardDescription>
