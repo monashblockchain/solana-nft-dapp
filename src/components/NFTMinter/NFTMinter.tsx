@@ -159,7 +159,7 @@ export default function NFTMinter() {
       setSymbol("");
       setDescription("");
       setImage(null);
-      setAttributes([{ trait_type: "", value: "" }]);
+      setAttributes([]);
     } catch (error) {
       console.error("Error minting NFT:", error);
       toast({

@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AttributeList from "./AttributeList";
+import { useState } from "react";
+import Image from "next/image";
 
 export default function NFTForm({
   name,
@@ -18,8 +20,14 @@ export default function NFTForm({
   attributes,
   setAttributes,
 }) {
+  const [imagePreview, setImagePreview] = useState(null);
+
   const handleImageChange = (e) => {
-    if (e.target.files) setImage(e.target.files[0]);
+    if (e.target.files) {
+      const selectedImage = e.target.files[0];
+      setImage(selectedImage);
+      setImagePreview(URL.createObjectURL(selectedImage));
+    }
   };
 
   return (
@@ -101,6 +109,15 @@ export default function NFTForm({
           accept="image/*"
           required
         />
+        {imagePreview && (
+          <Image
+            src={imagePreview}
+            alt="Selected preview"
+            width={96}
+            height={96}
+            className="object-cover rounded-md border mx-auto mt-3 w-1/2"
+          />
+        )}
       </div>
     </div>
   );
