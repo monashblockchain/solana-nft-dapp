@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { create, mplCore } from "@metaplex-foundation/mpl-core"; // Use mplCore
@@ -273,9 +273,6 @@ export default function NFTMinter() {
           )}
         </div>
       </CardContent>
-      <CardFooter className="flex justify-center">
-        <WalletMultiButton />
-      </CardFooter>
     </Card>
   );
 }
