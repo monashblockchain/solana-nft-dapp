@@ -19,6 +19,7 @@ export async function fetchSolanaNFTs(walletAddress: string) {
           if (nft.uri) {
             const response = await fetch(nft.uri);
             metadata = await response.json();
+            console.log(metadata);
           }
 
           return {
