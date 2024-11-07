@@ -37,12 +37,14 @@ export default function Home() {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <h1 className="text-2xl font-semibold text-primary-foreground">
+        <h1 className="text-2xl font-semibold text-bg-foreground">
           NFT Gallery
         </h1>
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="shadow-lg">Mint New NFT</Button>
+            <Button className="shadow-md transition-all duration-300 hover:shadow-lg">
+              Mint New NFT
+            </Button>
           </DialogTrigger>
           <DialogContent className="">
             <DialogHeader hidden={true}></DialogHeader>
