@@ -27,6 +27,7 @@ export async function fetchSolanaNFTs(walletAddress: string) {
             mintAddress: nft.mintAddress.toString(),
             uri: nft.uri,
             metadata, // includes image, description, and attributes
+            error: null,
           };
         } catch (error) {
           console.error(`Failed to fetch metadata for NFT ${nft.name}`, error);
@@ -36,12 +37,14 @@ export async function fetchSolanaNFTs(walletAddress: string) {
             mintAddress: nft.mintAddress.toString(),
             uri: nft.uri,
             metadata: null, // Set metadata to null if fetching fails
+            error,
           };
         }
       })
     );
 
-    return nftMetadata;
+    const filteredNftMetadata = nftMetadata.filter((nft) => nft.error === null);
+    return filteredNftMetadata;
   } catch (error) {
     console.error("Failed to fetch Solana NFTs using Metaplex SDK:", error);
     return [];

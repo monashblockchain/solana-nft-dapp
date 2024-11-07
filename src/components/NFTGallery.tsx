@@ -1,4 +1,9 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "framer-motion";
 
 interface NFT {
   mintAddress: string;
@@ -14,39 +19,84 @@ interface NFTGalleryProps {
 }
 
 export default function NFTGallery({ nfts }: NFTGalleryProps) {
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (nfts.length > 0) {
+      setIsLoading(false);
+    }
+  }, [nfts]);
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8 p-6">
+        {[...Array(8)].map((_, index) => (
+          <Card key={index} className="overflow-hidden">
+            <Skeleton className="h-48 w-full" />
+            <CardContent className="p-4">
+              <Skeleton className="h-6 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full mt-2" />
+            </CardContent>
+            <CardFooter className="p-2">
+              <Skeleton className="h-4 w-1/2" />
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8 p-6">
       {nfts.map((nft) => (
-        <Card
+        <motion.div
           key={nft.mintAddress}
-          className="overflow-hidden hover:shadow-md transition-shadow duration-300"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="relative h-48 w-full">
-            <img
-              src={nft.metadata?.image || "/placeholder.jpg"}
-              alt={nft.metadata?.name || "NFT"}
-              className="object-cover w-full h-full"
-              onError={(e) => {
-                e.currentTarget.src = "/placeholder.jpg";
-              }}
-            />
-          </div>
-          <CardContent className="p-4">
-            <h3 className="text-lg font-semibold mb-2 truncate">
-              {nft.metadata?.name || "Unnamed NFT"}
-            </h3>
-            {nft.metadata?.description && (
-              <p className="text-sm text-gray-600 line-clamp-2">
-                {nft.metadata.description}
+          <Card
+            className={`group overflow-hidden transition-all duration-300 bg-card hover:shadow-lg ${
+              hoveredCard === nft.mintAddress ? "ring-2 ring-primary" : ""
+            }`}
+            onMouseEnter={() => setHoveredCard(nft.mintAddress)}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
+            <div className="relative h-48 w-full overflow-hidden">
+              <img
+                src={nft.metadata?.image || "/placeholder.jpg"}
+                alt={nft.metadata?.name || "NFT"}
+                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.svg";
+                }}
+              />
+            </div>
+            <CardContent className="p-4 relative">
+              <h3 className="text-lg font-bold mb-2 truncate text-card-foreground">
+                {nft.metadata?.name || "Unnamed NFT"}
+              </h3>
+              {nft.metadata?.description ? (
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  {nft.metadata.description}
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  No description
+                </p>
+              )}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 transform rotate-45 translate-x-8 -translate-y-8" />
+            </CardContent>
+            <CardFooter className="bg-muted/50 p-2 flex justify-between items-center">
+              <p className="text-xs text-muted-foreground font-mono">
+                ID: {nft.mintAddress.slice(0, 8)}...
               </p>
-            )}
-          </CardContent>
-          <CardFooter className="bg-gray-50 p-2 flex justify-between items-center">
-            <p className="text-xs text-gray-500">
-              ID: {nft.mintAddress.slice(0, 8)}...
-            </p>
-          </CardFooter>
-        </Card>
+              <div className="h-6 w-6 rounded-full bg-gradient-to-r from-primary to-secondary animate-pulse" />
+            </CardFooter>
+          </Card>
+        </motion.div>
       ))}
     </div>
   );

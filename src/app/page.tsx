@@ -37,7 +37,9 @@ export default function Home() {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <h1 className="text-2xl font-semibold">My NFT Gallery</h1>
+        <h1 className="text-2xl font-semibold text-primary-foreground">
+          NFT Gallery
+        </h1>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="shadow-lg">Mint New NFT</Button>
