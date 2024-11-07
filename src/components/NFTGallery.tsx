@@ -30,10 +30,10 @@ export default function NFTGallery({ nfts }: NFTGalleryProps) {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8 p-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-8 p-6">
         {[...Array(8)].map((_, index) => (
           <Card key={index} className="overflow-hidden">
-            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full sm:h-60 md:h-72" />
             <CardContent className="p-4">
               <Skeleton className="h-6 w-3/4 mb-2" />
               <Skeleton className="h-4 w-full" />
@@ -49,7 +49,7 @@ export default function NFTGallery({ nfts }: NFTGalleryProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8 p-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-8 p-6">
       {nfts.map((nft) => (
         <motion.div
           key={nft.mintAddress}
@@ -63,8 +63,9 @@ export default function NFTGallery({ nfts }: NFTGalleryProps) {
             }`}
             onMouseEnter={() => setHoveredCard(nft.mintAddress)}
             onMouseLeave={() => setHoveredCard(null)}
+            style={{ width: "100%", height: "100%" }}
           >
-            <div className="relative h-48 w-full overflow-hidden">
+            <div className="relative w-full h-48 sm:h-60 md:h-72 overflow-hidden">
               <img
                 src={nft.metadata?.image || "/placeholder.jpg"}
                 alt={nft.metadata?.name || "NFT"}
