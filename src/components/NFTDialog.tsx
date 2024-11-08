@@ -51,7 +51,7 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
         </DialogTitle>
       </DialogHeader>
       <Tabs defaultValue="details" className="flex-grow flex flex-col">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 bg-transparent border">
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="metadata">Metadata</TabsTrigger>
         </TabsList>
@@ -96,9 +96,14 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
                 </div>
               </div>
             </div>
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-sm font-semibold mb-2">Attributes</h4>
+            <div className="space-y-6 h-full">
+              <div className="h-1/2">
+                <div className="flex space-x-1 items-center text-sm font-semibold mb-2">
+                  <p>Attributes</p>
+                  <p className="bg-muted px-1 py-0.5 rounded-sm">
+                    {nft.metadata?.attributes?.length || 0}
+                  </p>
+                </div>
                 {nft.metadata?.attributes &&
                 nft.metadata.attributes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-2">
