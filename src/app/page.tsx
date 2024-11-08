@@ -1,59 +1,40 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import NFTMinter from "@/components/NFTMinter/NFTMinter";
-import NFTGallery from "@/components/NFTGallery";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { fetchSolanaNFTs } from "@/lib/fetchSolanaNFTs";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { fetchTokenMetadataAssets } from "@/lib/fetchTokenMetadataAssets";
+import { fetchCoreAssets } from "@/lib/fetchCoreAssets";
+import NFTGallery from "@/components/NFTGallery";
+import { NFT } from "@/types/NFT";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 export default function Home() {
-  const { publicKey } = useWallet();
-  const [nfts, setNfts] = useState([]);
+  const { publicKey, wallet } = useWallet();
+  const [tokenMetadataAssets, setTokenMetadataAssets] = useState<NFT[]>([]);
+  const [coreAssets, setCoreAssets] = useState<NFT[]>([]);
 
   useEffect(() => {
-    async function loadNFTs() {
-      if (publicKey) {
-        const walletAddress = publicKey.toString();
-        const nftsData = await fetchSolanaNFTs(walletAddress);
-        setNfts(nftsData);
-      }
+    if (wallet && publicKey) {
+      // Fetch Token Metadata NFTs
+      fetchTokenMetadataAssets(publicKey, wallet.adapter).then(
+        setTokenMetadataAssets
+      );
+      // Fetch Core Assets
+      fetchCoreAssets(publicKey, wallet.adapter).then(setCoreAssets);
     }
-    loadNFTs();
-  }, [publicKey]);
+  }, [wallet, publicKey]);
 
   return (
-    <main className="container mx-auto p-4 bg-transparent">
+    <main className="container mx-auto p-4">
       <div className="absolute top-3 right-3">
         <WalletMultiButton />
       </div>
 
-      <div className="flex justify-between items-center mt-4">
-        <h1 className="text-2xl font-semibold text-bg-foreground">
-          NFT Gallery
-        </h1>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="shadow-md transition-all duration-300 hover:shadow-lg">
-              Mint New NFT
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="py-0.5 px-4">
-            <DialogHeader hidden={true}></DialogHeader>
-            <NFTMinter />
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      <NFTGallery nfts={nfts} />
+      <h1 className="text-2xl font-semibold text-center my-6">NFT Gallery</h1>
+      <NFTGallery
+        tokenMetadataNFTs={tokenMetadataAssets}
+        coreAssets={coreAssets}
+      />
     </main>
   );
 }
