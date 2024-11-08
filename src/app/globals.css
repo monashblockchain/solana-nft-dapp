@@ -95,11 +95,3 @@ body {
   border: 1px solid hsl(var(--border)) !important;
   margin-right: 3px;
 }
-
-.wallet-adapter-dropdown > ul > li {
-  @apply text-card-foreground;
-}
-
-.wallet-adapter-dropdown > ul > li:hover {
-  @apply bg-card text-primary-foreground;
-}

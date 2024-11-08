@@ -18,47 +18,69 @@ export default function BurnButton({ onBurn }: BurnButtonProps) {
   };
 
   return (
-    <AnimatePresence>
-      {!showBurnConfirm ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <Button
-            variant="outline"
-            onClick={() => setShowBurnConfirm(true)}
-            className="rounded-full w-16 h-16 bg-destructive/10 hover:bg-destructive/20 text-destructive hover:text-destructive border-none"
+    <div className="flex items-center justify-center">
+      <AnimatePresence mode="wait" initial={false}>
+        {!showBurnConfirm ? (
+          <motion.div
+            key="burn-icon"
+            initial={{ scale: 1, opacity: 1 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <Flame className="!h-8 !w-8" />
-          </Button>
-        </motion.div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="text-center"
-        >
-          <p className="text-sm text-muted-foreground mb-2">Burn this NFT?</p>
-          <div className="flex space-x-2 justify-center">
-            <Button
-              variant="destructive"
-              onClick={handleBurn}
-              className="rounded-full w-12 h-12"
-            >
-              <Flame className="h-6 w-6" />
-            </Button>
             <Button
               variant="outline"
-              onClick={() => setShowBurnConfirm(false)}
-              className="rounded-full w-12 h-12"
+              onClick={() => setShowBurnConfirm(true)}
+              className="rounded-full w-16 h-16 bg-destructive/10 hover:bg-destructive/20 text-destructive border-none"
             >
-              <X />
+              <Flame className="!h-8 !w-8" />
             </Button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="burn-confirm"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="flex flex-col items-center space-y-2"
+          >
+            <p className="text-sm text-muted-foreground mb-2">Burn this NFT?</p>
+            <div className="flex space-x-2">
+              <motion.div
+                key="confirm-burn"
+                initial={{ x: 0, opacity: 0 }}
+                animate={{ x: -20, opacity: 1 }}
+                exit={{ x: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <Button
+                  variant="destructive"
+                  onClick={handleBurn}
+                  className="rounded-full w-12 h-12"
+                >
+                  <Flame className="h-6 w-6" />
+                </Button>
+              </motion.div>
+              <motion.div
+                key="cancel-burn"
+                initial={{ x: 0, opacity: 0 }}
+                animate={{ x: 20, opacity: 1 }}
+                exit={{ x: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <Button
+                  variant="outline"
+                  onClick={() => setShowBurnConfirm(false)}
+                  className="rounded-full w-12 h-12"
+                >
+                  <X />
+                </Button>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
