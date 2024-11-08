@@ -5,6 +5,22 @@ import AttributeList from "./AttributeList";
 import { useState } from "react";
 import Image from "next/image";
 
+interface NFTFormProps {
+  name: string;
+  setName: (value: string) => void;
+  symbol: string;
+  setSymbol: (value: string) => void;
+  description: string;
+  setDescription: (value: string) => void;
+  image: File | null;
+  setImage: (file: File | null) => void;
+  tokenStandard: string;
+  setTokenStandard: (value: string) => void;
+  publicKey: string | null;
+  attributes: { trait_type: string; value: string }[];
+  setAttributes: (attributes: { trait_type: string; value: string }[]) => void;
+}
+
 export default function NFTForm({
   name,
   setName,
@@ -19,8 +35,8 @@ export default function NFTForm({
   publicKey,
   attributes,
   setAttributes,
-}) {
-  const [imagePreview, setImagePreview] = useState(null);
+}: NFTFormProps) {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleImageChange = (e) => {
     if (e.target.files) {
