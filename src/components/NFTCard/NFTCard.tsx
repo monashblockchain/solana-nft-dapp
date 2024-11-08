@@ -16,10 +16,44 @@ import NFTDialog from "./NFTDialog";
 interface NFTCardProps {
   nft: NFT;
   onBurn: (mintAddress: string) => void;
+  viewMode: "large" | "small" | "list";
 }
 
-export default function NFTCard({ nft, onBurn }: NFTCardProps) {
+export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
   const [hovered, setHovered] = useState(false);
+
+  const getCardClasses = () => {
+    switch (viewMode) {
+      case "large":
+        return "h-full";
+      case "small":
+        return "h-full";
+      case "list":
+        return "flex flex-row items-center p-2";
+    }
+  };
+
+  const getImageClasses = () => {
+    switch (viewMode) {
+      case "large":
+        return "w-full pt-[110%]";
+      case "small":
+        return "w-full pt-[100%]";
+      case "list":
+        return "w-16 h-16 flex-shrink-0";
+    }
+  };
+
+  const getContentClasses = () => {
+    switch (viewMode) {
+      case "large":
+        return "h-[90px]";
+      case "small":
+        return "h-[70px]";
+      case "list":
+        return "flex-grow ml-4";
+    }
+  };
 
   return (
     <Dialog>
@@ -34,43 +68,64 @@ export default function NFTCard({ nft, onBurn }: NFTCardProps) {
           <Card
             className={`group overflow-hidden transition-all duration-300 bg-card border-none hover:shadow-lg cursor-pointer ${
               hovered ? "shadow-2xl" : ""
-            }`}
+            } ${getCardClasses()}`}
           >
-            <div className="relative w-full pt-[110%] overflow-hidden">
+            <div className={`relative overflow-hidden ${getImageClasses()}`}>
               <img
                 src={nft.metadata?.image || "/placeholder.jpg"}
                 alt={nft.metadata?.name || "NFT"}
-                className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className={`${
+                  viewMode === "list"
+                    ? "w-full h-full"
+                    : "absolute top-0 left-0 w-full h-full"
+                } object-cover transition-transform duration-300 group-hover:scale-105 rounded-md`}
                 onError={(e) => {
                   e.currentTarget.src = "/placeholder.svg";
                 }}
               />
             </div>
-            <CardContent className="p-4 h-[90px]">
-              <h3 className="text-sm font-bold mb-1 truncate text-card-foreground">
-                {nft.metadata?.name || "Unnamed NFT"}
-              </h3>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {nft.metadata?.description || "No description"}
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs text-xs">
-                      {nft.metadata?.description || "No description"}
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+            <CardContent
+              className={`${
+                viewMode == "list" ? "p-1" : "p-4"
+              } ${getContentClasses()}`}
+            >
+              <div className={viewMode === "list" ? "flex flex-col" : ""}>
+                <h3 className="text-sm font-bold mb-1 truncate text-card-foreground">
+                  {nft.metadata?.name || "Unnamed NFT"}
+                </h3>
+                {viewMode === "list" && (
+                  <p className="text-xs text-muted-foreground mb-1">
+                    Symbol: {nft.metadata?.symbol || "N/A"}
+                  </p>
+                )}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p
+                        className={`text-xs text-muted-foreground ${
+                          viewMode === "list" ? "" : "line-clamp-2"
+                        }`}
+                      >
+                        {nft.metadata?.description || "No description"}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs text-xs">
+                        {nft.metadata?.description || "No description"}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </CardContent>
-            <CardFooter className="bg-muted/50 p-2 flex justify-between items-center">
-              <p className="text-xs text-muted-foreground font-mono">
-                ID: {nft.mintAddress.slice(0, 6)}...
-              </p>
-              <div className="h-4 w-4 rounded-full bg-gradient-to-r from-primary to-secondary animate-pulse" />
-            </CardFooter>
+            {viewMode !== "list" && (
+              <CardFooter className="bg-muted/50 p-2 flex justify-between items-center">
+                <p className="text-xs text-muted-foreground font-mono">
+                  ID: {nft.mintAddress.slice(0, 6)}...
+                </p>
+                <div className="h-4 w-4 rounded-full bg-gradient-to-r from-primary to-secondary animate-pulse" />
+              </CardFooter>
+            )}
           </Card>
         </motion.div>
       </DialogTrigger>

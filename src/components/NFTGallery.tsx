@@ -10,17 +10,22 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Grid, Columns, List } from "lucide-react";
 
 interface NFTGalleryProps {
   tokenMetadataNFTs: NFT[];
   coreAssets: NFT[];
 }
 
+type ViewMode = "large" | "small" | "list";
+
 export default function NFTGallery({
   tokenMetadataNFTs,
   coreAssets,
 }: NFTGalleryProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>("large");
 
   useEffect(() => {
     if (tokenMetadataNFTs.length > 0 || coreAssets.length > 0) {
@@ -28,11 +33,22 @@ export default function NFTGallery({
     }
   }, [tokenMetadataNFTs, coreAssets]);
 
+  const getGridClasses = () => {
+    switch (viewMode) {
+      case "large":
+        return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4";
+      case "small":
+        return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3";
+      case "list":
+        return "grid-cols-1 gap-2";
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="p-4">
         <Skeleton className="h-8 w-1/3 mb-4" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className={`grid ${getGridClasses()}`}>
           {[...Array(10)].map((_, index) => (
             <div key={index} className="overflow-hidden">
               <Skeleton className="w-full pt-[110%]" />
@@ -51,7 +67,39 @@ export default function NFTGallery({
   }
 
   return (
-    <div className="p-4 space-y-8">
+    <div className="p-4 space-y-4">
+      <div className="flex space-x-2">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setViewMode("large")}
+          className={
+            viewMode === "large" ? "bg-primary text-primary-foreground" : ""
+          }
+        >
+          <Grid className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setViewMode("small")}
+          className={
+            viewMode === "small" ? "bg-primary text-primary-foreground" : ""
+          }
+        >
+          <Columns className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setViewMode("list")}
+          className={
+            viewMode === "list" ? "bg-primary text-primary-foreground" : ""
+          }
+        >
+          <List className="h-4 w-4" />
+        </Button>
+      </div>
       <Accordion type="multiple">
         {/* Token Metadata NFTs Section */}
         <AccordionItem value="token-metadata">
@@ -59,9 +107,9 @@ export default function NFTGallery({
             Token Metadata NFTs ({tokenMetadataNFTs.length})
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-4">
+            <div className={`grid ${getGridClasses()} mt-4`}>
               {tokenMetadataNFTs.map((nft) => (
-                <NFTCard key={nft.mintAddress} nft={nft} />
+                <NFTCard key={nft.mintAddress} nft={nft} viewMode={viewMode} />
               ))}
             </div>
           </AccordionContent>
@@ -73,9 +121,9 @@ export default function NFTGallery({
             Core Assets ({coreAssets.length})
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-4">
+            <div className={`grid ${getGridClasses()} mt-4`}>
               {coreAssets.map((nft) => (
-                <NFTCard key={nft.mintAddress} nft={nft} />
+                <NFTCard key={nft.mintAddress} nft={nft} viewMode={viewMode} />
               ))}
             </div>
           </AccordionContent>
