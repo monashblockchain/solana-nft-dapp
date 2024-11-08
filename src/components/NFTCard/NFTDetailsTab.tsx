@@ -2,7 +2,7 @@ import { NFT } from "@/types/NFT";
 import { Copy, Check, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import BurnButton from "../BurnButton";
+import BurnButton from "./BurnButton";
 
 interface NFTDetailsTabProps {
   nft: NFT;
