@@ -1,8 +1,12 @@
+"use client";
+
 import { NFT } from "@/types/NFT";
 import { Copy, Check, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BurnButton from "./BurnButton";
+import TransferButton from "./TransferButton";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 interface NFTDetailsTabProps {
   nft: NFT;
@@ -10,6 +14,7 @@ interface NFTDetailsTabProps {
 }
 
 export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
+  const { wallet } = useWallet(); // Retrieve both publicKey and wallet
   const [copied, setCopied] = useState(false);
 
   const handleCopyAddress = () => {
@@ -88,7 +93,11 @@ export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
           className="flex items-center justify-center"
           style={{ height: "20%" }}
         >
-          <BurnButton onBurn={() => onBurn(nft.mintAddress)} />
+          <div className="flex items-center justify-center space-x-4">
+            <BurnButton onBurn={() => onBurn(nft.mintAddress)} />
+            {/* Pass wallet and nft to TransferButton */}
+            <TransferButton nft={nft} walletAdapter={wallet?.adapter} />
+          </div>
         </div>
       </div>
     </div>
