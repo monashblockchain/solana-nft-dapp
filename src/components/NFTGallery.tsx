@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import NFTCard from "./NFTCard/NFTCard";
 import { NFT } from "@/types/NFT";
+import NFTMinter from "./NFTMinter/NFTMinter"; // Import NFTMinter
 import {
   Accordion,
   AccordionItem,
@@ -12,6 +13,13 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Grid, Columns, List } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface NFTGalleryProps {
   tokenMetadataNFTs: NFT[];
@@ -68,38 +76,56 @@ export default function NFTGallery({
 
   return (
     <div className="p-4 space-y-4">
-      <div className="flex space-x-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setViewMode("large")}
-          className={
-            viewMode === "large" ? "bg-primary text-primary-foreground" : ""
-          }
-        >
-          <Grid className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setViewMode("small")}
-          className={
-            viewMode === "small" ? "bg-primary text-primary-foreground" : ""
-          }
-        >
-          <Columns className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setViewMode("list")}
-          className={
-            viewMode === "list" ? "bg-primary text-primary-foreground" : ""
-          }
-        >
-          <List className="h-4 w-4" />
-        </Button>
+      <div className="flex justify-between w-full">
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setViewMode("large")}
+            className={
+              viewMode === "large" ? "bg-primary text-primary-foreground" : ""
+            }
+          >
+            <Grid className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setViewMode("small")}
+            className={
+              viewMode === "small" ? "bg-primary text-primary-foreground" : ""
+            }
+          >
+            <Columns className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setViewMode("list")}
+            className={
+              viewMode === "list" ? "bg-primary text-primary-foreground" : ""
+            }
+          >
+            <List className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Dialog Trigger for NFT Minter */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <p>Mint New NFT</p>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="px-2 py-0">
+            <DialogHeader>
+              <DialogTitle hidden={true}>Mint a New NFT</DialogTitle>
+            </DialogHeader>
+            <NFTMinter />
+          </DialogContent>
+        </Dialog>
       </div>
+
       <Accordion type="multiple">
         {/* Token Metadata NFTs Section */}
         <AccordionItem value="token-metadata">
