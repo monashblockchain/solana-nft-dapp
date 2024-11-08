@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark h-full">
       <body
-        className={`${inter.className} bg-gradient-to-b from-primary/10 to-secondary/10 min-h-full`}
+        className={`${inter.className} bg-gradient-to-b from-primary/10 to-secondary/10 min-h-full bg-fixed bg-cover`}
         suppressHydrationWarning={true}
       >
         <WalletProviderWrapper>
