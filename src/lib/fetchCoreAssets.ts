@@ -2,7 +2,7 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { fetchAssetsByOwner } from "@metaplex-foundation/mpl-core";
 import { publicKey as createPublicKey } from "@metaplex-foundation/umi";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { WalletAdapter } from "@solana/wallet-adapter-base";
+import { WalletAdapter } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 
 export async function fetchCoreAssets(
@@ -12,7 +12,6 @@ export async function fetchCoreAssets(
   const umi = createUmi("https://api.devnet.solana.com").use(
     walletAdapterIdentity(walletAdapter)
   );
-
   const ownerPublicKey = createPublicKey(publicKey.toString());
 
   try {
@@ -26,15 +25,23 @@ export async function fetchCoreAssets(
         if (asset.uri) {
           try {
             const response = await fetch(asset.uri);
-            metadata = await response.json();
+            if (response.ok) {
+              metadata = await response.json();
+            } else {
+              console.error("Failed to fetch metadata:", response.statusText);
+            }
           } catch (error) {
-            console.error("Failed to fetch metadata from URI:", asset.uri);
+            console.error(
+              "Error fetching metadata from URI:",
+              asset.uri,
+              error
+            );
           }
         }
 
         return {
-          name: asset.name,
-          symbol: asset.symbol,
+          name: asset.name || "Unnamed",
+          symbol: asset.symbol || "N/A",
           mintAddress: asset.publicKey.toString(),
           metadata, // includes image, description, and attributes
           type: "core" as const,
@@ -42,7 +49,7 @@ export async function fetchCoreAssets(
       })
     );
 
-    return assetMetadata;
+    return assetMetadata.filter((asset) => asset.metadata !== null);
   } catch (error) {
     console.error("Failed to fetch Core Assets:", error);
     return [];
