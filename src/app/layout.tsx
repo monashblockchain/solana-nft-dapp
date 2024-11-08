@@ -17,8 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={inter.className} suppressHydrationWarning={true}>
+    <html lang="en" className="dark h-full">
+      <body
+        className={`${inter.className} bg-gradient-to-br from-primary/10 to-secondary/10 min-h-full`}
+        suppressHydrationWarning={true}
+      >
         <WalletProviderWrapper>
           {children}
           <Toaster />

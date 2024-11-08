@@ -31,7 +31,7 @@ export default function Home() {
   }, [publicKey]);
 
   return (
-    <main className="container mx-auto p-4">
+    <main className="container mx-auto p-4 bg-transparent">
       <div className="absolute top-3 right-3">
         <WalletMultiButton />
       </div>
