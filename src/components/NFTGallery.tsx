@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import NFTCard from "./NFTCard";
+import NFTCard from "./NFTCard/NFTCard";
 import { NFT } from "@/types/NFT";
 
 interface NFTGalleryProps {
