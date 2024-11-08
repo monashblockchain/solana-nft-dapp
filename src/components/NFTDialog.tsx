@@ -19,6 +19,7 @@ interface NFTDialogProps {
 
 export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
   const [copied, setCopied] = useState(false);
+  const [selectedTab, setSelectedTab] = useState("details");
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(nft.mintAddress);
@@ -43,10 +44,33 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
           </p>
         </DialogTitle>
       </DialogHeader>
-      <Tabs defaultValue="details" className="flex-grow flex flex-col">
-        <TabsList className="grid w-full grid-cols-2 gap-3 bg-transparent">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="metadata">Metadata</TabsTrigger>
+      <Tabs
+        defaultValue="details"
+        className="flex-grow flex flex-col"
+        onValueChange={(value) => setSelectedTab(value)}
+      >
+        <TabsList className="relative w-full grid grid-cols-2 gap-3 bg-transparent">
+          <TabsTrigger
+            value="details"
+            className="relative px-4 py-2 text-sm font-semibold text-gray-700 transition-colors duration-300 focus:outline-none"
+          >
+            Details
+          </TabsTrigger>
+          <TabsTrigger
+            value="metadata"
+            className="relative px-4 py-2 text-sm font-semibold text-gray-700 transition-colors duration-300 focus:outline-none"
+          >
+            Metadata
+          </TabsTrigger>
+          <span
+            className="absolute bottom-0 left-0 h-[2px] bg-primary transition-transform duration-300"
+            style={{
+              width: "49%",
+              transform: `translateX(${
+                selectedTab === "metadata" ? "100%" : "0%"
+              })`,
+            }}
+          />
         </TabsList>
         <TabsContent value="details" className="flex-grow overflow-auto">
           <div className="grid grid-cols-2 gap-4 h-full">
