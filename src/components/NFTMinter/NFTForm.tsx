@@ -91,7 +91,7 @@ export default function NFTForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="border-none shadow-md bg-secondary text-secondary-foreground"
+          className="border-none shadow-md bg-secondary text-secondary-foreground mt-1"
         />
       </div>
 
@@ -102,7 +102,7 @@ export default function NFTForm({
           value={symbol}
           onChange={(e) => setSymbol(e.target.value)}
           required
-          className="border-none shadow-md bg-secondary text-secondary-foreground"
+          className="border-none shadow-md bg-secondary text-secondary-foreground mt-1"
         />
       </div>
 
@@ -113,7 +113,7 @@ export default function NFTForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          className="border-none shadow-md bg-secondary text-secondary-foreground"
+          className="border-none shadow-md bg-secondary text-secondary-foreground mt-1"
         />
       </div>
 
@@ -127,7 +127,7 @@ export default function NFTForm({
           onChange={handleImageChange}
           accept="image/*"
           required
-          className="bg-secondary text-secondary-foreground border-none shadow py-2"
+          className="bg-secondary text-secondary-foreground border-none shadow py-2 mt-1"
         />
         {imagePreview && (
           <Image

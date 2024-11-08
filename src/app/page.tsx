@@ -46,7 +46,7 @@ export default function Home() {
               Mint New NFT
             </Button>
           </DialogTrigger>
-          <DialogContent className="">
+          <DialogContent className="py-0.5 px-4">
             <DialogHeader hidden={true}></DialogHeader>
             <NFTMinter />
           </DialogContent>
