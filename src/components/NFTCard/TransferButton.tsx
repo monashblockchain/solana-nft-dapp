@@ -110,7 +110,6 @@ export default function TransferButton({
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 <Button
-                  variant="primary"
                   onClick={handleTransfer}
                   disabled={!recipientAddress || isTransferring}
                   className="rounded-full w-12 h-12"

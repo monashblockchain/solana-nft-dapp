@@ -14,7 +14,7 @@ interface NFTDetailsTabProps {
 }
 
 export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
-  const { wallet } = useWallet(); // Retrieve both publicKey and wallet
+  const { wallet } = useWallet();
   const [copied, setCopied] = useState(false);
 
   const handleCopyAddress = () => {
@@ -64,7 +64,7 @@ export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
         </div>
       </div>
       <div className="flex flex-col h-full">
-        <ScrollArea className="flex-grow" style={{ height: "80%" }}>
+        <ScrollArea className="flex-grow" style={{ height: "70%" }}>
           <div className="flex space-x-1 items-center text-sm font-semibold mb-2">
             <p>Attributes</p>
             <p className="bg-muted px-1 py-0.5 rounded-sm">
@@ -91,11 +91,10 @@ export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
         </ScrollArea>
         <div
           className="flex items-center justify-center"
-          style={{ height: "20%" }}
+          style={{ height: "30%" }}
         >
-          <div className="flex items-center justify-center space-x-4">
+          <div className="flex items-center justify-center space-x-8">
             <BurnButton onBurn={() => onBurn(nft.mintAddress)} />
-            {/* Pass wallet and nft to TransferButton */}
             <TransferButton nft={nft} walletAdapter={wallet?.adapter} />
           </div>
         </div>
