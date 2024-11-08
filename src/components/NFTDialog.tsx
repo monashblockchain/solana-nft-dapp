@@ -7,11 +7,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Copy, Check, ExternalLink, Flame } from "lucide-react";
+import { Copy, Check, ExternalLink } from "lucide-react";
 import { NFT } from "@/types/NFT";
-import { motion, AnimatePresence } from "framer-motion";
+import BurnButton from "./BurnButton";
 
 interface NFTDialogProps {
   nft: NFT;
@@ -20,17 +19,11 @@ interface NFTDialogProps {
 
 export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
   const [copied, setCopied] = useState(false);
-  const [showBurnConfirm, setShowBurnConfirm] = useState(false);
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(nft.mintAddress);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleBurn = () => {
-    onBurn(nft.mintAddress);
-    setShowBurnConfirm(false);
   };
 
   // Format metadata as color-coded JSON string
@@ -51,12 +44,12 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
         </DialogTitle>
       </DialogHeader>
       <Tabs defaultValue="details" className="flex-grow flex flex-col">
-        <TabsList className="grid w-full grid-cols-2 bg-transparent border">
+        <TabsList className="grid w-full grid-cols-2 gap-3 bg-transparent">
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="metadata">Metadata</TabsTrigger>
         </TabsList>
         <TabsContent value="details" className="flex-grow overflow-auto">
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-4 h-full">
             <div className="space-y-3">
               <div className="aspect-square w-full overflow-hidden rounded-lg shadow-lg">
                 <img
@@ -96,8 +89,8 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
                 </div>
               </div>
             </div>
-            <div className="space-y-6 h-full">
-              <div className="h-1/2">
+            <div className="flex flex-col h-full">
+              <ScrollArea className="flex-grow" style={{ height: "80%" }}>
                 <div className="flex space-x-1 items-center text-sm font-semibold mb-2">
                   <p>Attributes</p>
                   <p className="bg-muted px-1 py-0.5 rounded-sm">
@@ -124,53 +117,12 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
                     No attributes found
                   </p>
                 )}
-              </div>
-              <div className="mt-auto">
-                <AnimatePresence>
-                  {!showBurnConfirm ? (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                    >
-                      <Button
-                        variant="outline"
-                        onClick={() => setShowBurnConfirm(true)}
-                        className="w-full bg-destructive/10 hover:bg-destructive/20 text-destructive hover:text-destructive border-none"
-                      >
-                        <Flame className="mr-2 h-4 w-4" />
-                        Burn NFT
-                      </Button>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="space-y-2"
-                    >
-                      <p className="text-sm text-muted-foreground text-center">
-                        Are you sure?
-                      </p>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="destructive"
-                          onClick={handleBurn}
-                          className="flex-1"
-                        >
-                          Yes, Burn It
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowBurnConfirm(false)}
-                          className="flex-1"
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              </ScrollArea>
+              <div
+                className="flex items-center justify-center"
+                style={{ height: "20%" }}
+              >
+                <BurnButton onBurn={() => onBurn(nft.mintAddress)} />
               </div>
             </div>
           </div>
