@@ -19,12 +19,13 @@ export async function fetchTokenMetadataAssets(
 
     const assetMetadata = await Promise.all(
       assets.map(async (asset) => {
-        let metadata = null;
+        // Fetch additional metadata from the URI
+        let fetchedData = null;
         if (asset.metadata?.uri) {
           try {
             const response = await fetch(asset.metadata.uri);
             if (response.ok) {
-              metadata = await response.json();
+              fetchedData = await response.json();
             } else {
               console.error("Failed to fetch metadata:", response.statusText);
             }
@@ -37,11 +38,32 @@ export async function fetchTokenMetadataAssets(
           }
         }
 
+        // Build an object that mirrors the Solana Explorer structure
         return {
+          root: {
+            key: asset.metadata.key,
+            updateAuthority: asset.metadata.updateAuthority,
+            mint: asset.metadata.mint,
+            data: {
+              name: asset.metadata.name || "Unnamed",
+              symbol: asset.metadata.symbol || "N/A",
+              uri: asset.metadata.uri,
+              sellerFeeBasisPoints: asset.metadata.sellerFeeBasisPoints || 0,
+              creators: asset.metadata.creators?.value || [],
+            },
+            primarySaleHappened: asset.metadata.primarySaleHappened,
+            isMutable: asset.metadata.isMutable,
+            editionNonce: asset.metadata.editionNonce?.value || null,
+            tokenStandard:
+              asset.metadata.tokenStandard !== null &&
+              asset.metadata.tokenStandard !== undefined
+                ? asset.metadata.tokenStandard.value
+                : null,
+          },
           name: asset.metadata.name || "Unnamed",
           symbol: asset.metadata.symbol || "N/A",
-          mintAddress: asset.publicKey.toString(),
-          metadata, // includes image, description, and attributes
+          mintAddress: asset.metadata.mint,
+          metadata: fetchedData, // This includes description, attributes, image, etc.
           type: "token-metadata" as const,
         };
       })
@@ -49,7 +71,7 @@ export async function fetchTokenMetadataAssets(
 
     return assetMetadata.filter((asset) => asset.metadata !== null);
   } catch (error) {
-    console.error("Failed to fetch Token Metadata NFTs:", error);
+    console.error("Failed to fetch Explorer-style Token Metadata NFTs:", error);
     return [];
   }
 }
