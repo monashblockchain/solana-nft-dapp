@@ -20,7 +20,7 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
   const [selectedTab, setSelectedTab] = useState("details");
 
   return (
-    <DialogContent className="sm:max-w-[700px] max-h-[80vh] flex flex-col">
+    <DialogContent className="sm:max-w-[800px] max-h-[85vh] flex flex-col bg-secondary/50 backdrop-blur-md">
       <DialogHeader>
         <DialogTitle className="text-2xl font-bold flex space-x-2 items-center">
           <p className="text-primary">{nft.metadata?.name || "Unnamed NFT"}</p>
@@ -38,13 +38,13 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
         <TabsList className="relative w-full grid grid-cols-2 gap-3 bg-transparent">
           <TabsTrigger
             value="details"
-            className="relative px-4 py-2 text-sm font-semibold text-gray-700 transition-colors duration-300 focus:outline-none"
+            className="relative px-4 py-2 text-sm font-semibold text-gray-700 transition-colors duration-300 focus:outline-none !bg-transparent"
           >
             Details
           </TabsTrigger>
           <TabsTrigger
             value="metadata"
-            className="relative px-4 py-2 text-sm font-semibold text-gray-700 transition-colors duration-300 focus:outline-none"
+            className="relative px-4 py-2 text-sm font-semibold text-gray-700 transition-colors duration-300 focus:outline-none !bg-transparent"
           >
             Metadata
           </TabsTrigger>

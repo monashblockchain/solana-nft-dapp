@@ -33,13 +33,13 @@ export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="bg-muted p-4 rounded-lg">
+        <div className="bg-muted/50 p-4 rounded-lg">
           <h4 className="text-sm font-semibold mb-2">Description</h4>
           <p className="text-sm text-muted-foreground">
             {nft.metadata?.description || "No description"}
           </p>
         </div>
-        <div className="bg-muted p-4 rounded-lg">
+        <div className="bg-muted/50 p-4 rounded-lg">
           <h4 className="text-sm font-semibold mb-2">Mint Address</h4>
           <div className="flex items-center space-x-2">
             <a

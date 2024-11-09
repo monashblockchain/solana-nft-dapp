@@ -45,8 +45,8 @@ export async function fetchTokenMetadataAssets(
             updateAuthority: asset.metadata.updateAuthority,
             mint: asset.metadata.mint,
             data: {
-              name: asset.metadata.name || "Unnamed",
-              symbol: asset.metadata.symbol || "N/A",
+              name: asset.metadata.name || "",
+              symbol: asset.metadata.symbol || "",
               uri: asset.metadata.uri,
               sellerFeeBasisPoints: asset.metadata.sellerFeeBasisPoints || 0,
               creators: asset.metadata.creators?.value || [],
