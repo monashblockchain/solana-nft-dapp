@@ -75,7 +75,7 @@ export default function NFTGallery({
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4">
       <div className="flex justify-between w-full">
         <div className="flex space-x-2">
           <Button
@@ -126,7 +126,10 @@ export default function NFTGallery({
         </Dialog>
       </div>
 
-      <Accordion type="multiple">
+      <Accordion
+        type="multiple"
+        defaultValue={["token-metadata", "core-assets"]}
+      >
         {/* Token Metadata NFTs Section */}
         <AccordionItem value="token-metadata">
           <AccordionTrigger className="text-lg font-semibold">
