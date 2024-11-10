@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { create, mplCore } from "@metaplex-foundation/mpl-core";
+import { create, mplCore, ruleSet } from "@metaplex-foundation/mpl-core";
+import { publicKey as createPublicKey } from "@metaplex-foundation/umi";
 import {
   createNft,
   mplTokenMetadata,
@@ -25,7 +26,7 @@ import NFTForm from "./NFTForm";
 import MintInfo from "./MintInfo";
 import { createNftForToken2022 } from "@/lib/createNftForToken2022";
 
-// Define the token standard options
+// Token standard options
 const TokenStandards = {
   METADATA: "Metadata",
   CORE: "Core",
@@ -42,8 +43,9 @@ export default function NFTMinter() {
   const [transactionLink, setTransactionLink] = useState("");
   const [metadataUri, setMetadataUri] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [tokenStandard, setTokenStandard] = useState(TokenStandards.METADATA); // Single state for token standard selection
+  const [tokenStandard, setTokenStandard] = useState(TokenStandards.METADATA);
   const [attributes, setAttributes] = useState([]);
+  const [royalty, setRoyalty] = useState(0);
   const { toast } = useToast();
 
   const handleMint = async () => {
@@ -127,7 +129,7 @@ export default function NFTMinter() {
         tx = await createNftForToken2022(umi, {
           name: metadata.name,
           uri: metadataUri,
-          sellerFeeBasisPoints: percentAmount(0),
+          sellerFeeBasisPoints: percentAmount(royalty),
         });
       } else if (tokenStandard === TokenStandards.CORE) {
         // Core minting
@@ -135,12 +137,25 @@ export default function NFTMinter() {
           asset: assetOrMint,
           name: metadata.name,
           uri: metadataUri,
+          plugins: [
+            {
+              type: "Royalties",
+              basisPoints: royalty * 100,
+              creators: [
+                {
+                  address: createPublicKey(publicKey.toString()),
+                  percentage: 100,
+                },
+              ],
+              ruleSet: ruleSet("None"),
+            },
+          ],
         }).sendAndConfirm(umi);
       } else {
         // Default Token Metadata minting
         tx = await createNft(umi, {
           mint: assetOrMint,
-          sellerFeeBasisPoints: percentAmount(0),
+          sellerFeeBasisPoints: percentAmount(royalty),
           name: metadata.name,
           uri: metadataUri,
         }).sendAndConfirm(umi);
@@ -160,6 +175,7 @@ export default function NFTMinter() {
       setDescription("");
       setImage(null);
       setAttributes([]);
+      setRoyalty(5);
     } catch (error) {
       console.error("Error minting NFT:", error);
       toast({
@@ -196,6 +212,8 @@ export default function NFTMinter() {
           publicKey={publicKey}
           attributes={attributes}
           setAttributes={setAttributes}
+          royalty={royalty}
+          setRoyalty={setRoyalty}
         />
         <Button
           className="w-full mt-4"

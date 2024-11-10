@@ -4,6 +4,13 @@ import { Label } from "@/components/ui/label";
 import AttributeList from "./AttributeList";
 import { useState } from "react";
 import Image from "next/image";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 
 interface NFTFormProps {
   name: string;
@@ -19,6 +26,8 @@ interface NFTFormProps {
   publicKey: string | null;
   attributes: { trait_type: string; value: string }[];
   setAttributes: (attributes: { trait_type: string; value: string }[]) => void;
+  royalty: number;
+  setRoyalty: (value: number) => void;
 }
 
 export default function NFTForm({
@@ -35,8 +44,11 @@ export default function NFTForm({
   publicKey,
   attributes,
   setAttributes,
+  royalty,
+  setRoyalty,
 }: NFTFormProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const handleImageChange = (e) => {
     if (e.target.files) {
@@ -112,6 +124,40 @@ export default function NFTForm({
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          required
+          className="border-none shadow-md bg-secondary text-secondary-foreground mt-1"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="royalty" className="flex items-center">
+          Royalty Percentage
+          <TooltipProvider>
+            <Tooltip open={showTooltip} onOpenChange={setShowTooltip}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setShowTooltip((prev) => !prev)}
+                  className="focus:outline-none"
+                >
+                  <Info className="h-4 w-4 ml-1 text-muted-foreground cursor-pointer" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p className="text-xs">
+                  The royalty percentage determines the amount the original
+                  creator earns each time the NFT is resold.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </Label>
+        <Input
+          id="royalty"
+          type="number"
+          min={1}
+          max={100}
+          value={royalty}
+          onChange={(e) => setRoyalty(Number(e.target.value))}
           required
           className="border-none shadow-md bg-secondary text-secondary-foreground mt-1"
         />
