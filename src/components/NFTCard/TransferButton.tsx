@@ -8,21 +8,19 @@ import { Input } from "@/components/ui/input";
 import { NFT } from "@/types/NFT";
 import { transferV1 as transferMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { transferV1 as transferCore } from "@metaplex-foundation/mpl-core";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { PublicKey } from "@solana/web3.js";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
-import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { mplCore } from "@metaplex-foundation/mpl-core";
 
 interface TransferButtonProps {
   nft: NFT;
-  walletAdapter: any;
+  umi: any;
+  owner: any;
 }
 
 export default function TransferButton({
   nft,
-  walletAdapter,
+  umi,
+  owner,
 }: TransferButtonProps) {
   const [showTransferConfirm, setShowTransferConfirm] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState("");
@@ -30,10 +28,6 @@ export default function TransferButton({
 
   const handleTransfer = async () => {
     setIsTransferring(true);
-    const umi = createUmi("https://api.devnet.solana.com")
-      .use(mplTokenMetadata())
-      .use(mplCore())
-      .use(walletAdapterIdentity(walletAdapter));
 
     try {
       const mint = new PublicKey(nft.mintAddress);
@@ -42,8 +36,8 @@ export default function TransferButton({
       if (nft.type === "token-metadata") {
         await transferMetadata(umi, {
           mint,
-          authority: walletAdapter.publicKey,
-          tokenOwner: walletAdapter.publicKey,
+          authority: owner.publicKey,
+          tokenOwner: owner.publicKey,
           destinationOwner,
           tokenStandard: TokenStandard.NonFungible,
         }).sendAndConfirm(umi);
@@ -96,7 +90,7 @@ export default function TransferButton({
               Transfer this NFT?
             </p>
             <Input
-              placeholder="Recipient Wallet Address"
+              placeholder="Wallet Address"
               value={recipientAddress}
               onChange={(e) => setRecipientAddress(e.target.value)}
               className="text-sm mb-2 w-40"

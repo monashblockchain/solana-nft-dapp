@@ -21,6 +21,7 @@ interface NFTCardProps {
 
 export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
   const [hovered, setHovered] = useState(false);
+  //   console.log(nft)
 
   const getCardClasses = () => {
     switch (viewMode) {
@@ -91,11 +92,11 @@ export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
             >
               <div className={viewMode === "list" ? "flex flex-col" : ""}>
                 <h3 className="text-sm font-bold mb-1 truncate text-card-foreground">
-                  {nft.metadata?.name || "Unnamed NFT"}
+                  {nft.name || "Unnamed NFT"}
                 </h3>
                 {viewMode === "list" && (
                   <p className="text-xs text-muted-foreground mb-1">
-                    Symbol: {nft.metadata?.symbol || "N/A"}
+                    Symbol: {nft.symbol || "N/A"}
                   </p>
                 )}
                 <TooltipProvider>
@@ -111,7 +112,7 @@ export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="max-w-xs text-xs">
-                        {nft.metadata?.description || "No description"}
+                        {nft.description || "No description"}
                       </p>
                     </TooltipContent>
                   </Tooltip>

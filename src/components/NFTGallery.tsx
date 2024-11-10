@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import NFTCard from "./NFTCard/NFTCard";
 import { NFT } from "@/types/NFT";
-import NFTMinter from "./NFTMinter/NFTMinter"; // Import NFTMinter
+import NFTMinter from "./NFTMinter/NFTMinter";
 import {
   Accordion,
   AccordionItem,

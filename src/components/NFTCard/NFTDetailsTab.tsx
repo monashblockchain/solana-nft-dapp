@@ -7,6 +7,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import BurnButton from "./BurnButton";
 import TransferButton from "./TransferButton";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { mplCore } from "@metaplex-foundation/mpl-core";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 
 interface NFTDetailsTabProps {
   nft: NFT;
@@ -16,6 +20,11 @@ interface NFTDetailsTabProps {
 export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
   const { wallet } = useWallet();
   const [copied, setCopied] = useState(false);
+
+  const umi = createUmi("https://api.devnet.solana.com")
+    .use(mplTokenMetadata())
+    .use(mplCore())
+    .use(walletAdapterIdentity(wallet?.adapter));
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(nft.mintAddress);
@@ -95,7 +104,11 @@ export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
         >
           <div className="flex items-center justify-center space-x-8">
             <BurnButton onBurn={() => onBurn(nft.mintAddress)} />
-            <TransferButton nft={nft} walletAdapter={wallet?.adapter} />
+            <TransferButton
+              nft={nft}
+              umi={umi}
+              walletAdapter={wallet?.adapter}
+            />
           </div>
         </div>
       </div>

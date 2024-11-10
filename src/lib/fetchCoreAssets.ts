@@ -49,7 +49,7 @@ export async function fetchCoreAssets(
       })
     );
 
-    return assetMetadata.filter((asset) => asset.metadata !== null);
+    return assetMetadata;
   } catch (error) {
     console.error("Failed to fetch Core Assets:", error);
     return [];

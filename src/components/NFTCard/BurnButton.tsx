@@ -4,16 +4,29 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Flame, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { burnV1 } from "@metaplex-foundation/mpl-token-metadata";
+import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
+import { PublicKey } from "@solana/web3.js";
+import { NFT } from "@/types/NFT";
 
 interface BurnButtonProps {
-  onBurn: () => void;
+  nft: NFT;
+  umi: any;
+  owner: any;
 }
 
-export default function BurnButton({ onBurn }: BurnButtonProps) {
+export default function BurnButton({ nft, umi, owner }: BurnButtonProps) {
   const [showBurnConfirm, setShowBurnConfirm] = useState(false);
 
-  const handleBurn = () => {
-    onBurn();
+  const handleBurn = async () => {
+    const mint = new PublicKey(nft.mintAddress);
+
+    await burnV1(umi, {
+      mint,
+      authority: owner,
+      tokenOwner: owner.publicKey,
+      tokenStandard: TokenStandard.NonFungible,
+    }).sendAndConfirm(umi);
     setShowBurnConfirm(false);
   };
 

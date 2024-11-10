@@ -16,7 +16,7 @@ export async function fetchTokenMetadataAssets(
 
   try {
     const assets = await fetchAllDigitalAssetByOwner(umi, ownerPublicKey);
-
+    console.log("Fetched assets:", assets);
     const assetMetadata = await Promise.all(
       assets.map(async (asset) => {
         // Fetch additional metadata from the URI
@@ -69,7 +69,7 @@ export async function fetchTokenMetadataAssets(
       })
     );
 
-    return assetMetadata.filter((asset) => asset.metadata !== null);
+    return assetMetadata;
   } catch (error) {
     console.error("Failed to fetch Explorer-style Token Metadata NFTs:", error);
     return [];
