@@ -7,6 +7,13 @@ interface NFTMetadataTabProps {
 
 export default function NFTMetadataTab({ nft }: NFTMetadataTabProps) {
   // Format metadata as color-coded JSON string
+  if (!nft.root)
+    return (
+      <div className="h-full flex items-center justify-center text-gray-500 mt-4">
+        No metadata available
+      </div>
+    );
+
   const formattedMetadata = JSON.stringify(nft.root, null, 2)
     .replace(/"([^"]+)":/g, `"<span class="text-primary">$1</span>":`) // Color keys
     .replace(/: "(.*?)"/g, `: "<span class="text-orange-300">$1</span>"`) // Color string values

@@ -4,10 +4,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Flame, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { burnV1 } from "@metaplex-foundation/mpl-token-metadata";
-import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
+import {
+  burnV1 as burnTokenMetadataV1,
+  TokenStandard,
+} from "@metaplex-foundation/mpl-token-metadata";
+import { burn as burnCore, fetchAsset } from "@metaplex-foundation/mpl-core";
+import { publicKey as createPublicKey } from "@metaplex-foundation/umi";
 import { PublicKey } from "@solana/web3.js";
 import { NFT } from "@/types/NFT";
+import { useToast } from "@/hooks/use-toast";
 
 interface BurnButtonProps {
   nft: NFT;
@@ -16,18 +21,42 @@ interface BurnButtonProps {
 }
 
 export default function BurnButton({ nft, umi, owner }: BurnButtonProps) {
+  const { toast } = useToast();
   const [showBurnConfirm, setShowBurnConfirm] = useState(false);
 
   const handleBurn = async () => {
-    const mint = new PublicKey(nft.mintAddress);
+    try {
+      if (nft.type === "token-metadata") {
+        // Token Metadata NFT burn
+        const mint = new PublicKey(nft.mintAddress);
+        await burnTokenMetadataV1(umi, {
+          mint,
+          authority: owner.publicKey,
+          tokenOwner: owner.publicKey,
+          tokenStandard: TokenStandard.NonFungible,
+        }).sendAndConfirm(umi);
+      } else if (nft.type === "core") {
+        // Core Asset NFT burn
+        const assetId = createPublicKey(nft.mintAddress);
+        const asset = await fetchAsset(umi, assetId);
+        await burnCore(umi, {
+          asset: asset,
+        }).sendAndConfirm(umi);
+      }
 
-    await burnV1(umi, {
-      mint,
-      authority: owner.publicKey,
-      tokenOwner: owner.publicKey,
-      tokenStandard: TokenStandard.NonFungible,
-    }).sendAndConfirm(umi);
-    setShowBurnConfirm(false);
+      toast({
+        title: "Success",
+        description: "NFT burned successfully!",
+      });
+      setShowBurnConfirm(false);
+    } catch (error) {
+      console.error("Error burning NFT:", error);
+      toast({
+        title: "Error",
+        description: "Failed to burn NFT. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
