@@ -23,7 +23,7 @@ export default function BurnButton({ nft, umi, owner }: BurnButtonProps) {
 
     await burnV1(umi, {
       mint,
-      authority: owner,
+      authority: owner.publicKey,
       tokenOwner: owner.publicKey,
       tokenStandard: TokenStandard.NonFungible,
     }).sendAndConfirm(umi);

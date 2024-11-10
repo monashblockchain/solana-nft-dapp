@@ -14,10 +14,9 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 
 interface NFTDetailsTabProps {
   nft: NFT;
-  onBurn: (mintAddress: string) => void;
 }
 
-export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
+export default function NFTDetailsTab({ nft }: NFTDetailsTabProps) {
   const { wallet } = useWallet();
   const [copied, setCopied] = useState(false);
 
@@ -103,12 +102,8 @@ export default function NFTDetailsTab({ nft, onBurn }: NFTDetailsTabProps) {
           style={{ height: "30%" }}
         >
           <div className="flex items-center justify-center space-x-8">
-            <BurnButton onBurn={() => onBurn(nft.mintAddress)} />
-            <TransferButton
-              nft={nft}
-              umi={umi}
-              walletAdapter={wallet?.adapter}
-            />
+            <BurnButton nft={nft} umi={umi} owner={wallet?.adapter} />
+            <TransferButton nft={nft} umi={umi} owner={wallet?.adapter} />
           </div>
         </div>
       </div>
