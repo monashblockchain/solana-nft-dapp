@@ -182,7 +182,7 @@ export default function NFTForm({
             alt="Selected preview"
             width={96}
             height={96}
-            className="object-cover rounded-md border mx-auto mt-3 w-1/2"
+            className="object-cover rounded-md border mx-auto mt-3 w-1/4"
           />
         )}
       </div>

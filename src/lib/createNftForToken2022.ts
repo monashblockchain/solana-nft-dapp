@@ -31,13 +31,15 @@ export async function createNftForToken2022(
   const walletPublicKey = umi.identity.publicKey;
   const mint = generateSigner(umi);
 
+  console.log(sellerFeeBasisPoints);
+
   // Step 1: Create metadata for the NFT using createV1
   await createV1(umi, {
     mint,
     authority: walletPublicKey,
     name,
     uri: metadataUri,
-    sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
+    sellerFeeBasisPoints: sellerFeeBasisPoints,
     splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
     tokenStandard: TokenStandard.NonFungible,
   }).sendAndConfirm(umi);

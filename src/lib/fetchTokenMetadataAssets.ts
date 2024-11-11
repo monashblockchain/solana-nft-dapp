@@ -16,7 +16,6 @@ export async function fetchTokenMetadataAssets(
 
   try {
     const assets = await fetchAllDigitalAssetByOwner(umi, ownerPublicKey);
-    console.log("Fetched assets:", assets);
     const assetMetadata = await Promise.all(
       assets.map(async (asset) => {
         // Fetch additional metadata from the URI
