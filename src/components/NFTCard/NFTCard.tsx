@@ -67,7 +67,7 @@ export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
           onMouseLeave={() => setHovered(false)}
         >
           <Card
-            className={`group overflow-hidden transition-all duration-300 bg-card border-none hover:shadow-lg cursor-pointer ${
+            className={`group overflow-hidden transition-all duration-300 bg-card/70 border-none hover:shadow-lg cursor-pointer ${
               hovered ? "shadow-2xl" : ""
             } ${getCardClasses()}`}
           >
@@ -79,7 +79,7 @@ export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
                   viewMode === "list"
                     ? "w-full h-full"
                     : "absolute top-0 left-0 w-full h-full"
-                } object-cover transition-transform duration-300 group-hover:scale-105 rounded-md`}
+                } object-cover transition-transform duration-300 group-hover:scale-105 rounded-tl-md rounded-tr-md`}
                 onError={(e) => {
                   e.currentTarget.src = "/placeholder.svg";
                 }}
@@ -87,7 +87,7 @@ export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
             </div>
             <CardContent
               className={`${
-                viewMode == "list" ? "p-1" : "p-4"
+                viewMode == "list" ? "p-0.5" : "p-4"
               } ${getContentClasses()}`}
             >
               <div className={viewMode === "list" ? "flex flex-col" : ""}>

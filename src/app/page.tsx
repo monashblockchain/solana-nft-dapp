@@ -30,7 +30,7 @@ export default function Home() {
         <WalletMultiButton />
       </div>
 
-      <h1 className="text-2xl font-semibold text-center my-6">NFT Gallery</h1>
+      <h1 className="text-2xl font-semibold text-center my-4">NFT Gallery</h1>
       <NFTGallery
         tokenMetadataNFTs={tokenMetadataAssets}
         coreAssets={coreAssets}

@@ -2,8 +2,8 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { fetchAssetsByOwner } from "@metaplex-foundation/mpl-core";
 import { publicKey as createPublicKey } from "@metaplex-foundation/umi";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { WalletAdapter } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
+import { WalletAdapter } from "@solana/wallet-adapter-base";
 
 export async function fetchCoreAssets(
   publicKey: PublicKey,
@@ -21,12 +21,13 @@ export async function fetchCoreAssets(
 
     const assetMetadata = await Promise.all(
       assets.map(async (asset) => {
-        let metadata = null;
+        // Fetch additional metadata from the URI
+        let fetchedData = null;
         if (asset.uri) {
           try {
             const response = await fetch(asset.uri);
             if (response.ok) {
-              metadata = await response.json();
+              fetchedData = await response.json();
             } else {
               console.error("Failed to fetch metadata:", response.statusText);
             }
@@ -39,11 +40,24 @@ export async function fetchCoreAssets(
           }
         }
 
+        // Build an object that mirrors the Solana Explorer structure
         return {
+          root: {
+            key: asset.key,
+            updateAuthority: asset.updateAuthority.address,
+            mint: asset.publicKey.toString(),
+            data: {
+              name: asset.name || "",
+              symbol: fetchedData.symbol || "",
+              uri: asset.uri,
+              sellerFeeBasisPoints: asset.royalties?.basisPoints || 0,
+              creators: asset.royalties?.creators || [],
+            },
+          },
           name: asset.name || "Unnamed",
-          symbol: asset.symbol || "N/A",
+          symbol: fetchedData.symbol || "N/A",
           mintAddress: asset.publicKey.toString(),
-          metadata, // includes image, description, and attributes
+          metadata: fetchedData, // This includes image, description, attributes, etc.
           type: "core" as const,
         };
       })
@@ -51,7 +65,7 @@ export async function fetchCoreAssets(
 
     return assetMetadata;
   } catch (error) {
-    console.error("Failed to fetch Core Assets:", error);
+    console.error("Failed to fetch Explorer-style Core Assets:", error);
     return [];
   }
 }

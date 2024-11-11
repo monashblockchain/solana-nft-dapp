@@ -136,7 +136,7 @@ export default function NFTGallery({
             Token Metadata NFTs ({tokenMetadataNFTs.length})
           </AccordionTrigger>
           <AccordionContent>
-            <div className={`grid ${getGridClasses()} mt-4`}>
+            <div className={`grid ${getGridClasses()} mt-2`}>
               {tokenMetadataNFTs.map((nft) => (
                 <NFTCard key={nft.mintAddress} nft={nft} viewMode={viewMode} />
               ))}
@@ -150,7 +150,7 @@ export default function NFTGallery({
             Core Assets ({coreAssets.length})
           </AccordionTrigger>
           <AccordionContent>
-            <div className={`grid ${getGridClasses()} mt-4`}>
+            <div className={`grid ${getGridClasses()} mt-2`}>
               {coreAssets.map((nft) => (
                 <NFTCard key={nft.mintAddress} nft={nft} viewMode={viewMode} />
               ))}
