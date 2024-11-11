@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
+import { PublicKey } from "@solana/web3.js";
 
 interface NFTFormProps {
   name: string;
@@ -23,7 +24,7 @@ interface NFTFormProps {
   setImage: (file: File | null) => void;
   tokenStandard: string;
   setTokenStandard: (value: string) => void;
-  publicKey: string | null;
+  publicKey: PublicKey | null;
   attributes: { trait_type: string; value: string }[];
   setAttributes: (attributes: { trait_type: string; value: string }[]) => void;
   royalty: number;
@@ -159,7 +160,7 @@ export default function NFTForm({
           value={royalty}
           onChange={(e) => setRoyalty(Number(e.target.value))}
           required
-          className="border-none shadow-md bg-secondary text-secondary-foreground mt-1"
+          className="border-none shadow-md bg-secondary text-secondary-foreground mt-2"
         />
       </div>
 

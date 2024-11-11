@@ -175,7 +175,7 @@ export default function NFTMinter() {
       setDescription("");
       setImage(null);
       setAttributes([]);
-      setRoyalty(5);
+      setRoyalty(0);
     } catch (error) {
       console.error("Error minting NFT:", error);
       toast({
