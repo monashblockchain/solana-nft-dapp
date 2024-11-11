@@ -51,7 +51,7 @@ export default function NFTDetailsTab({ nft }: NFTDetailsTabProps) {
           <h4 className="text-sm font-semibold mb-2">Mint Address</h4>
           <div className="flex items-center space-x-2">
             <a
-              href={`https://explorer.solana.com/address/${nft.mintAddress}?cluster=devnet`}
+              href={`https://solscan.io/token/${nft.mintAddress}?cluster=devnet`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-primary hover:underline flex-1 truncate"
