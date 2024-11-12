@@ -12,7 +12,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Grid, Columns, List } from "lucide-react";
+import { Grid, Columns, List, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 interface NFTGalleryProps {
   tokenMetadataNFTs: NFT[];
@@ -34,12 +35,31 @@ export default function NFTGallery({
 }: NFTGalleryProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("large");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredTokenMetadataNFTs, setFilteredTokenMetadataNFTs] =
+    useState(tokenMetadataNFTs);
+  const [filteredCoreAssets, setFilteredCoreAssets] = useState(coreAssets);
 
   useEffect(() => {
     if (tokenMetadataNFTs.length > 0 || coreAssets.length > 0) {
       setIsLoading(false);
     }
   }, [tokenMetadataNFTs, coreAssets]);
+
+  useEffect(() => {
+    const lowerCaseQuery = searchQuery.toLowerCase();
+
+    setFilteredTokenMetadataNFTs(
+      tokenMetadataNFTs.filter((nft) =>
+        nft.name.toLowerCase().includes(lowerCaseQuery)
+      )
+    );
+    setFilteredCoreAssets(
+      coreAssets.filter((nft) =>
+        nft.name.toLowerCase().includes(lowerCaseQuery)
+      )
+    );
+  }, [searchQuery, tokenMetadataNFTs, coreAssets]);
 
   const getGridClasses = () => {
     switch (viewMode) {
@@ -75,8 +95,9 @@ export default function NFTGallery({
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between w-full">
+    <div className="p-4 mt-10">
+      <div className="flex justify-between items-center w-full">
+        {/* View Mode Buttons */}
         <div className="flex space-x-2">
           <Button
             variant="outline"
@@ -110,6 +131,23 @@ export default function NFTGallery({
           </Button>
         </div>
 
+        {/* Search bar */}
+        <div className="flex items-center w-1/2">
+          <Input
+            placeholder="Search NFTs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-r-none"
+          />
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-l-none border-l-0 bg-transparent"
+          >
+            <Search className="h-5 w-5" />
+          </Button>
+        </div>
+
         {/* Dialog Trigger for NFT Minter */}
         <Dialog>
           <DialogTrigger asChild>
@@ -126,6 +164,7 @@ export default function NFTGallery({
         </Dialog>
       </div>
 
+      {/* Accordion for Token Metadata NFTs and Core Assets */}
       <Accordion
         type="multiple"
         defaultValue={["token-metadata", "core-assets"]}
@@ -133,11 +172,11 @@ export default function NFTGallery({
         {/* Token Metadata NFTs Section */}
         <AccordionItem value="token-metadata">
           <AccordionTrigger className="text-lg font-semibold">
-            Token Metadata NFTs ({tokenMetadataNFTs.length})
+            Token Metadata NFTs ({filteredTokenMetadataNFTs.length})
           </AccordionTrigger>
           <AccordionContent>
-            <div className={`grid ${getGridClasses()} mt-2`}>
-              {tokenMetadataNFTs.map((nft) => (
+            <div className={`grid ${getGridClasses()}`}>
+              {filteredTokenMetadataNFTs.map((nft) => (
                 <NFTCard key={nft.mintAddress} nft={nft} viewMode={viewMode} />
               ))}
             </div>
@@ -147,11 +186,11 @@ export default function NFTGallery({
         {/* Core Assets Section */}
         <AccordionItem value="core-assets">
           <AccordionTrigger className="text-lg font-semibold">
-            Core Assets ({coreAssets.length})
+            Core Assets ({filteredCoreAssets.length})
           </AccordionTrigger>
           <AccordionContent>
-            <div className={`grid ${getGridClasses()} mt-2`}>
-              {coreAssets.map((nft) => (
+            <div className={`grid ${getGridClasses()}`}>
+              {filteredCoreAssets.map((nft) => (
                 <NFTCard key={nft.mintAddress} nft={nft} viewMode={viewMode} />
               ))}
             </div>
