@@ -10,7 +10,12 @@ import {
   createNft,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { generateSigner, percentAmount } from "@metaplex-foundation/umi";
+import {
+  generateSigner,
+  percentAmount,
+  publicKey,
+  PublicKey,
+} from "@metaplex-foundation/umi";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
@@ -25,6 +30,10 @@ import { useToast } from "@/hooks/use-toast";
 import NFTForm from "./NFTForm";
 import MintInfo from "./MintInfo";
 import { createNftForToken2022 } from "@/lib/createNftForToken2022";
+
+const SPL_TOKEN_2022_PROGRAM_ID: PublicKey = publicKey(
+  "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+);
 
 // Token standard options
 const TokenStandards = {
@@ -126,11 +135,14 @@ export default function NFTMinter() {
       let tx;
       if (tokenStandard === TokenStandards.TOKEN_2022) {
         // Token-2022 minting
-        tx = await createNftForToken2022(umi, {
-          name: metadata.name,
-          uri: metadataUri,
+        tx = await createNft(umi, {
+          mint: assetOrMint,
           sellerFeeBasisPoints: percentAmount(royalty),
-        });
+          name: metadata.name,
+          symbol: metadata.symbol,
+          uri: metadataUri,
+          splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
+        }).sendAndConfirm(umi);
       } else if (tokenStandard === TokenStandards.CORE) {
         // Core minting
         tx = await create(umi, {
@@ -157,6 +169,7 @@ export default function NFTMinter() {
           mint: assetOrMint,
           sellerFeeBasisPoints: percentAmount(royalty),
           name: metadata.name,
+          symbol: metadata.symbol,
           uri: metadataUri,
         }).sendAndConfirm(umi);
       }

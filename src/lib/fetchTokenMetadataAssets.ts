@@ -44,8 +44,8 @@ export async function fetchTokenMetadataAssets(
             updateAuthority: asset.metadata.updateAuthority,
             mint: asset.metadata.mint,
             data: {
-              name: asset.metadata.name || "",
-              symbol: asset.metadata.symbol || "",
+              name: asset.metadata.name || fetchedData?.name || "",
+              symbol: asset.metadata.symbol || fetchedData?.symbol || "",
               uri: asset.metadata.uri,
               sellerFeeBasisPoints: asset.metadata.sellerFeeBasisPoints || 0,
               creators: asset.metadata.creators?.value || [],
@@ -59,8 +59,8 @@ export async function fetchTokenMetadataAssets(
                 ? asset.metadata.tokenStandard.value
                 : null,
           },
-          name: asset.metadata.name || "Unnamed",
-          symbol: asset.metadata.symbol || "N/A",
+          name: asset.metadata.name || fetchedData?.name || "",
+          symbol: asset.metadata.symbol || fetchedData?.symbol || "",
           mintAddress: asset.metadata.mint,
           metadata: fetchedData, // This includes description, attributes, image, etc.
           type: "token-metadata" as const,
