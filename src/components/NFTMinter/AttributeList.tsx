@@ -53,7 +53,7 @@ export default function AttributeList({ attributes, setAttributes }) {
       <Button
         variant="outline"
         onClick={handleAddAttribute}
-        className="w-full shadow border-none bg-accent"
+        className="w-full shadow border-dashed"
       >
         Add Attribute
       </Button>

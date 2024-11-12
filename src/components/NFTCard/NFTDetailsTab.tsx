@@ -1,3 +1,4 @@
+// NFTDetailsTab.tsx
 "use client";
 
 import { NFT } from "@/types/NFT";
@@ -6,6 +7,7 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BurnButton from "./BurnButton";
 import TransferButton from "./TransferButton";
+import EditButton from "./EditButton"; // Import the new EditButton
 import { useWallet } from "@solana/wallet-adapter-react";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { mplCore } from "@metaplex-foundation/mpl-core";
@@ -98,13 +100,12 @@ export default function NFTDetailsTab({ nft }: NFTDetailsTabProps) {
           )}
         </ScrollArea>
         <div
-          className="flex items-center justify-center"
+          className="flex items-center justify-center space-x-4"
           style={{ height: "30%" }}
         >
-          <div className="flex items-center justify-center space-x-8">
-            <BurnButton nft={nft} umi={umi} owner={wallet?.adapter} />
-            <TransferButton nft={nft} umi={umi} owner={wallet?.adapter} />
-          </div>
+          <BurnButton nft={nft} umi={umi} owner={wallet?.adapter} />
+          <TransferButton nft={nft} umi={umi} owner={wallet?.adapter} />
+          <EditButton nft={nft} umi={umi} />
         </div>
       </div>
     </div>
