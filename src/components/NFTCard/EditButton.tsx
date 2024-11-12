@@ -24,7 +24,7 @@ export default function EditButton({ nft, umi }: EditButtonProps) {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="rounded-full w-16 h-16 bg-accent/10 hover:bg-accent/20 text-accent-foreground"
+          className="rounded-full w-16 h-16 bg-muted/50 hover:bg-muted/70 text-muted-foreground border-none"
         >
           <Edit className="!h-7 !w-7" />
         </Button>
