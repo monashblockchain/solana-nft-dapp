@@ -80,9 +80,6 @@ export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
                     ? "w-full h-full"
                     : "absolute top-0 left-0 w-full h-full"
                 } object-cover transition-transform duration-300 group-hover:scale-105 rounded-tl-md rounded-tr-md`}
-                onError={(e) => {
-                  e.currentTarget.src = "/placeholder.svg";
-                }}
               />
             </div>
             <CardContent
