@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import NFTCard from "./NFTCard/NFTCard";
 import { NFT } from "@/types/NFT";
 import NFTMinter from "./NFTMinter/NFTMinter";
@@ -11,8 +10,6 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Grid, Columns, List, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +18,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import ViewModeButtons from "./ViewModeButtons";
+import NFTGallerySkeleton from "./NFTGallerySkeleton";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 interface NFTGalleryProps {
   tokenMetadataNFTs: NFT[];
@@ -61,6 +62,10 @@ export default function NFTGallery({
     );
   }, [searchQuery, tokenMetadataNFTs, coreAssets]);
 
+  if (isLoading) {
+    return <NFTGallerySkeleton viewMode={viewMode} />;
+  }
+
   const getGridClasses = () => {
     switch (viewMode) {
       case "large":
@@ -72,87 +77,11 @@ export default function NFTGallery({
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="p-4 mt-10">
-        {/* Top section skeleton */}
-        <div className="flex justify-between items-center mb-6">
-          {/* View mode buttons skeleton */}
-          <div className="flex space-x-2">
-            {[...Array(3)].map((_, index) => (
-              <Skeleton key={index} className="h-9 w-9 rounded-md" />
-            ))}
-          </div>
-
-          {/* Search bar skeleton */}
-          <div className="flex items-center w-1/2">
-            <Skeleton className="w-full h-10 rounded-r-none" />
-            <Skeleton className="h-10 w-10 rounded-l-none" />
-          </div>
-
-          {/* Mint button skeleton */}
-          <Skeleton className="h-10 w-32 rounded-md" />
-        </div>
-
-        {/* Accordion items skeleton */}
-        <div className="space-y-4">
-          {[...Array(2)].map((_, index) => (
-            <div key={index}>
-              <Skeleton className="h-8 w-1/4 mb-2 rounded-md" />
-              <div className={`grid ${getGridClasses()}`}>
-                {[...Array(5)].map((_, index) => (
-                  <div key={index} className="overflow-hidden">
-                    <Skeleton className="w-full pt-[110%] rounded-lg" />
-                    <div className="p-4 h-[90px] space-y-2">
-                      <Skeleton className="h-6 w-3/4 rounded-md" />
-                      <Skeleton className="h-4 w-1/2 rounded-md" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="p-4 mt-10">
       <div className="flex justify-between items-center w-full">
         {/* View Mode Buttons */}
-        <div className="flex space-x-1">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setViewMode("large")}
-            className={
-              viewMode === "large" ? "bg-primary text-primary-foreground" : ""
-            }
-          >
-            <Grid className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setViewMode("small")}
-            className={
-              viewMode === "small" ? "bg-primary text-primary-foreground" : ""
-            }
-          >
-            <Columns className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setViewMode("list")}
-            className={
-              viewMode === "list" ? "bg-primary text-primary-foreground" : ""
-            }
-          >
-            <List className="h-4 w-4" />
-          </Button>
-        </div>
+        <ViewModeButtons viewMode={viewMode} setViewMode={setViewMode} />
 
         {/* Search bar */}
         <div className="flex items-center w-1/2">
@@ -192,7 +121,6 @@ export default function NFTGallery({
         type="multiple"
         defaultValue={["token-metadata", "core-assets"]}
       >
-        {/* Token Metadata NFTs Section */}
         <AccordionItem value="token-metadata">
           <AccordionTrigger className="text-lg font-semibold">
             <div className="flex space-x-1.5 items-center">
@@ -211,7 +139,6 @@ export default function NFTGallery({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Core Assets Section */}
         <AccordionItem value="core-assets">
           <AccordionTrigger className="text-lg font-semibold">
             <div className="flex space-x-1.5 items-center">
