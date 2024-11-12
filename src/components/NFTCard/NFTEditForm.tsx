@@ -12,6 +12,7 @@ import {
 } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
 import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
 
 interface NFTEditFormProps {
   nft: NFT;
@@ -25,21 +26,78 @@ export default function NFTEditForm({ nft, umi }: NFTEditFormProps) {
   );
   const [symbol, setSymbol] = useState(nft.metadata?.symbol || "");
   const [attributes, setAttributes] = useState(nft.metadata?.attributes || []);
+  const [image, setImage] = useState<File | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
   const { toast } = useToast();
 
   const handleUpdate = async () => {
     try {
-      const initialMetadata = await fetchMetadataFromSeeds(umi, {
-        mint: new PublicKey(nft.mintAddress),
-      });
+      setIsUpdating(true);
+
+      // Upload image to IPFS if a new image is selected
+      let imageUrl = nft.metadata?.image;
+      if (image) {
+        const pinataApiKey = process.env.PINATA_API_KEY;
+        const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY;
+
+        const formData = new FormData();
+        formData.append("file", image);
+
+        const pinataImageResponse = await axios.post(
+          "https://api.pinata.cloud/pinning/pinFileToIPFS",
+          formData,
+          {
+            headers: {
+              pinata_api_key: pinataApiKey,
+              pinata_secret_api_key: pinataSecretApiKey,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const imageHash = pinataImageResponse.data.IpfsHash;
+        imageUrl = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
+      }
+
+      // Construct updated metadata object
+      const updatedMetadata = {
+        name,
+        description,
+        symbol,
+        image: imageUrl,
+        attributes,
+      };
+
+      // Upload updated metadata to IPFS
+      const pinataApiKey = process.env.PINATA_API_KEY;
+      const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY;
+      const pinataMetadataResponse = await axios.post(
+        "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+        updatedMetadata,
+        {
+          headers: {
+            pinata_api_key: pinataApiKey,
+            pinata_secret_api_key: pinataSecretApiKey,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const metadataHash = pinataMetadataResponse.data.IpfsHash;
+      const metadataUri = `https://gateway.pinata.cloud/ipfs/${metadataHash}`;
+
+      // Fetch initial metadata and update with new URI
+      const mint = new PublicKey(nft.mintAddress);
+      const initialMetadata = await fetchMetadataFromSeeds(umi, { mint });
 
       await updateV1(umi, {
-        mint: new PublicKey(nft.mintAddress),
+        mint,
         authority: umi.identity.publicKey,
         data: {
           ...initialMetadata,
           name,
           symbol,
+          uri: metadataUri,
         },
       }).sendAndConfirm(umi);
 
@@ -54,6 +112,15 @@ export default function NFTEditForm({ nft, umi }: NFTEditFormProps) {
         description: "Please try again",
         variant: "destructive",
       });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files) {
+      const selectedImage = e.target.files[0];
+      setImage(selectedImage);
     }
   };
 
@@ -91,8 +158,23 @@ export default function NFTEditForm({ nft, umi }: NFTEditFormProps) {
 
       <AttributeList attributes={attributes} setAttributes={setAttributes} />
 
-      <Button onClick={handleUpdate} className="w-full mt-4">
-        Update NFT
+      <div>
+        <Label htmlFor="image">Image</Label>
+        <Input
+          id="image"
+          type="file"
+          onChange={handleImageChange}
+          accept="image/*"
+          className="bg-secondary text-secondary-foreground border-none shadow py-2 mt-1"
+        />
+      </div>
+
+      <Button
+        onClick={handleUpdate}
+        className="w-full mt-4"
+        disabled={isUpdating}
+      >
+        {isUpdating ? "Updating..." : "Update NFT"}
       </Button>
     </div>
   );

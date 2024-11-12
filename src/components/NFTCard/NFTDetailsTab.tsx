@@ -1,4 +1,3 @@
-// NFTDetailsTab.tsx
 "use client";
 
 import { NFT } from "@/types/NFT";
@@ -7,7 +6,7 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BurnButton from "./BurnButton";
 import TransferButton from "./TransferButton";
-import EditButton from "./EditButton"; // Import the new EditButton
+import EditButton from "./EditButton";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { mplCore } from "@metaplex-foundation/mpl-core";

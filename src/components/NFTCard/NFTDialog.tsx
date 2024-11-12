@@ -23,10 +23,12 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
     <DialogContent className="sm:max-w-[800px] max-h-[85vh] flex flex-col bg-secondary/50 backdrop-blur-md">
       <DialogHeader>
         <DialogTitle className="text-2xl font-bold flex space-x-2 items-center">
-          <p className="text-primary">{nft.metadata?.name || "Unnamed NFT"}</p>
+          <p className="text-primary">
+            {nft.metadata?.name || nft.name || "Unnamed NFT"}
+          </p>
           <p className="text-lg text-gray-500 font-semibold">-</p>
           <p className="text-lg text-gray-500 font-semibold">
-            {nft.metadata?.symbol || "N/A"}
+            {nft.metadata?.symbol || nft.symbol || "Unknown Symbol"}
           </p>
         </DialogTitle>
       </DialogHeader>
