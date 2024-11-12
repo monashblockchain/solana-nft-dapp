@@ -172,7 +172,12 @@ export default function NFTGallery({
         {/* Token Metadata NFTs Section */}
         <AccordionItem value="token-metadata">
           <AccordionTrigger className="text-lg font-semibold">
-            Token Metadata NFTs ({filteredTokenMetadataNFTs.length})
+            <div className="flex space-x-1.5 items-center">
+              <p>Token Metadata NFTs</p>
+              <p className="bg-muted px-1 rounded-sm">
+                {filteredTokenMetadataNFTs.length}
+              </p>
+            </div>
           </AccordionTrigger>
           <AccordionContent>
             <div className={`grid ${getGridClasses()}`}>
@@ -186,7 +191,12 @@ export default function NFTGallery({
         {/* Core Assets Section */}
         <AccordionItem value="core-assets">
           <AccordionTrigger className="text-lg font-semibold">
-            Core Assets ({filteredCoreAssets.length})
+            <div className="flex space-x-1.5 items-center">
+              <p>Core Assets</p>
+              <p className="bg-muted px-1 rounded-sm">
+                {filteredCoreAssets.length}
+              </p>
+            </div>
           </AccordionTrigger>
           <AccordionContent>
             <div className={`grid ${getGridClasses()}`}>
