@@ -45,6 +45,7 @@ export default function Home() {
         <NFTGallery
           tokenMetadataNFTs={tokenMetadataAssets}
           coreAssets={coreAssets}
+          isWalletConnected={!!wallet && !!publicKey}
         />
       </div>
     </main>

@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import NFTCard from "./NFTCard/NFTCard";
 import { NFT } from "@/types/NFT";
@@ -21,11 +19,12 @@ import { Input } from "@/components/ui/input";
 import ViewModeButtons from "./ViewModeButtons";
 import NFTGallerySkeleton from "./NFTGallerySkeleton";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Wallet } from "lucide-react";
 
 interface NFTGalleryProps {
   tokenMetadataNFTs: NFT[];
   coreAssets: NFT[];
+  isWalletConnected: boolean;
 }
 
 type ViewMode = "large" | "small" | "list";
@@ -33,6 +32,7 @@ type ViewMode = "large" | "small" | "list";
 export default function NFTGallery({
   tokenMetadataNFTs,
   coreAssets,
+  isWalletConnected,
 }: NFTGalleryProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("large");
@@ -42,10 +42,13 @@ export default function NFTGallery({
   const [filteredCoreAssets, setFilteredCoreAssets] = useState(coreAssets);
 
   useEffect(() => {
-    if (tokenMetadataNFTs.length > 0 || coreAssets.length > 0) {
+    if (
+      isWalletConnected &&
+      (tokenMetadataNFTs.length > 0 || coreAssets.length > 0)
+    ) {
       setIsLoading(false);
     }
-  }, [tokenMetadataNFTs, coreAssets]);
+  }, [isWalletConnected, tokenMetadataNFTs, coreAssets]);
 
   useEffect(() => {
     const lowerCaseQuery = searchQuery.toLowerCase();
@@ -61,6 +64,17 @@ export default function NFTGallery({
       )
     );
   }, [searchQuery, tokenMetadataNFTs, coreAssets]);
+
+  if (!isWalletConnected) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center space-y-4 text-muted-foreground mt-40">
+        <Wallet className="h-16 w-16" />
+        <p className="text-3xl font-semibold">
+          Connect your wallet to view your NFTs
+        </p>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return <NFTGallerySkeleton viewMode={viewMode} />;
