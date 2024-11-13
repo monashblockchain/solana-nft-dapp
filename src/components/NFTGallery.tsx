@@ -78,7 +78,7 @@ export default function NFTGallery({
   };
 
   return (
-    <div className="p-4 mt-10">
+    <div className="p-4">
       <div className="flex justify-between items-center w-full">
         {/* View Mode Buttons */}
         <ViewModeButtons viewMode={viewMode} setViewMode={setViewMode} />

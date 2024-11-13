@@ -7,8 +7,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Token Manager",
-  description: "Superteam FTW",
+  title: "Mintopia",
+  description: "A utopia for minting and managing tokens and collections",
 };
 
 export default function RootLayout({
