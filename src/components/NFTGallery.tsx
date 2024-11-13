@@ -98,7 +98,7 @@ export default function NFTGallery({
         <ViewModeButtons viewMode={viewMode} setViewMode={setViewMode} />
 
         {/* Search bar */}
-        <div className="flex items-center w-1/2">
+        <div className="flex items-center w-1/2 mx-1">
           <Input
             placeholder="Search NFTs..."
             value={searchQuery}

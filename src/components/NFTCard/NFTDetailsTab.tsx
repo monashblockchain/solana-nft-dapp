@@ -103,7 +103,7 @@ export default function NFTDetailsTab({ nft }: NFTDetailsTabProps) {
           )}
         </ScrollArea>
         <div
-          className="flex items-center justify-center space-x-4"
+          className="flex items-center justify-center space-x-6"
           style={{ height: "30%" }}
         >
           <BurnButton nft={nft} umi={umi} owner={wallet?.adapter} />
