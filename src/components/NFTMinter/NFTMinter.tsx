@@ -29,7 +29,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import NFTForm from "./NFTForm";
 import MintInfo from "./MintInfo";
-import { createNftForToken2022 } from "@/lib/createNftForToken2022";
 
 const SPL_TOKEN_2022_PROGRAM_ID: PublicKey = publicKey(
   "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
