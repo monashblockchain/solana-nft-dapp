@@ -15,13 +15,11 @@ import NFTDialog from "./NFTDialog";
 
 interface NFTCardProps {
   nft: NFT;
-  onBurn: (mintAddress: string) => void;
   viewMode: "large" | "small" | "list";
 }
 
-export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
+export default function NFTCard({ nft, viewMode }: NFTCardProps) {
   const [hovered, setHovered] = useState(false);
-  //   console.log(nft)
 
   const getCardClasses = () => {
     switch (viewMode) {
@@ -109,7 +107,7 @@ export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="max-w-xs text-xs">
-                        {nft.description || "No description"}
+                        {nft.metadata?.description || "No description"}
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -127,7 +125,7 @@ export default function NFTCard({ nft, onBurn, viewMode }: NFTCardProps) {
           </Card>
         </motion.div>
       </DialogTrigger>
-      <NFTDialog nft={nft} onBurn={onBurn} />
+      <NFTDialog nft={nft} />
     </Dialog>
   );
 }

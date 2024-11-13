@@ -48,15 +48,19 @@ export async function fetchTokenMetadataAssets(
               symbol: asset.metadata.symbol || fetchedData?.symbol || "",
               uri: asset.metadata.uri,
               sellerFeeBasisPoints: asset.metadata.sellerFeeBasisPoints || 0,
+              // @ts-expect-error: Suppress type error for creators
               creators: asset.metadata.creators?.value || [],
             },
             primarySaleHappened: asset.metadata.primarySaleHappened,
             isMutable: asset.metadata.isMutable,
+            // @ts-expect-error: Suppress type error for editionNonce
             editionNonce: asset.metadata.editionNonce?.value || null,
+            //
             tokenStandard:
               asset.metadata.tokenStandard !== null &&
               asset.metadata.tokenStandard !== undefined
-                ? asset.metadata.tokenStandard.value
+                ? // @ts-expect-error: Suppress type error for tokenStandard
+                  asset.metadata.tokenStandard.value
                 : null,
           },
           name: asset.metadata.name || fetchedData?.name || "",

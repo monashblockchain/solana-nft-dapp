@@ -13,10 +13,11 @@ import { publicKey as createPublicKey } from "@metaplex-foundation/umi";
 import { PublicKey } from "@solana/web3.js";
 import { NFT } from "@/types/NFT";
 import { useToast } from "@/hooks/use-toast";
+import { Umi } from "@metaplex-foundation/umi";
 
 interface BurnButtonProps {
   nft: NFT;
-  umi: any;
+  umi: Umi;
   owner: any;
 }
 

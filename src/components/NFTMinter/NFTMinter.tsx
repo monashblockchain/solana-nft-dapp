@@ -52,7 +52,9 @@ export default function NFTMinter() {
   const [metadataUri, setMetadataUri] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [tokenStandard, setTokenStandard] = useState(TokenStandards.METADATA);
-  const [attributes, setAttributes] = useState([]);
+  const [attributes, setAttributes] = useState<
+    { trait_type: string; value: string }[]
+  >([]);
   const [royalty, setRoyalty] = useState(0);
   const { toast } = useToast();
 

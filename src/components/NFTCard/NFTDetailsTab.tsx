@@ -21,10 +21,14 @@ export default function NFTDetailsTab({ nft }: NFTDetailsTabProps) {
   const { wallet } = useWallet();
   const [copied, setCopied] = useState(false);
 
+  if (!wallet) {
+    return null;
+  }
+
   const umi = createUmi("https://api.devnet.solana.com")
     .use(mplTokenMetadata())
     .use(mplCore())
-    .use(walletAdapterIdentity(wallet?.adapter));
+    .use(walletAdapterIdentity(wallet.adapter));
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(nft.mintAddress);
@@ -82,7 +86,7 @@ export default function NFTDetailsTab({ nft }: NFTDetailsTabProps) {
           </div>
           {nft.metadata?.attributes && nft.metadata.attributes.length > 0 ? (
             <div className="grid grid-cols-2 gap-2">
-              {nft.metadata.attributes.map((attr, index) => (
+              {nft.metadata.attributes.map((attr: any, index: any) => (
                 <div
                   key={index}
                   className="bg-gradient-to-br from-primary/10 to-secondary/10 p-3 rounded-lg shadow transition-shadow duration-300 hover:shadow-md"

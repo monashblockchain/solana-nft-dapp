@@ -20,7 +20,6 @@ interface NFTFormProps {
   setSymbol: (value: string) => void;
   description: string;
   setDescription: (value: string) => void;
-  image: File | null;
   setImage: (file: File | null) => void;
   tokenStandard: string;
   setTokenStandard: (value: string) => void;
@@ -38,7 +37,6 @@ export default function NFTForm({
   setSymbol,
   description,
   setDescription,
-  image,
   setImage,
   tokenStandard,
   setTokenStandard,
@@ -51,7 +49,7 @@ export default function NFTForm({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: any) => {
     if (e.target.files) {
       const selectedImage = e.target.files[0];
       setImage(selectedImage);

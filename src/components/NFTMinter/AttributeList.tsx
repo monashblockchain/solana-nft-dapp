@@ -3,8 +3,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2 } from "lucide-react";
 
-export default function AttributeList({ attributes, setAttributes }) {
-  const handleAttributeChange = (index, key, value) => {
+interface Attribute {
+  trait_type: string;
+  value: string;
+}
+
+interface AttributeListProps {
+  attributes: Attribute[];
+  setAttributes: (attributes: Attribute[]) => void;
+}
+
+export default function AttributeList({
+  attributes,
+  setAttributes,
+}: AttributeListProps) {
+  const handleAttributeChange = (
+    index: number,
+    key: keyof Attribute,
+    value: string
+  ) => {
     const updatedAttributes = [...attributes];
     updatedAttributes[index][key] = value;
     setAttributes(updatedAttributes);
@@ -14,7 +31,7 @@ export default function AttributeList({ attributes, setAttributes }) {
     setAttributes([...attributes, { trait_type: "", value: "" }]);
   };
 
-  const handleRemoveAttribute = (index) => {
+  const handleRemoveAttribute = (index: number) => {
     const updatedAttributes = attributes.filter((_, i) => i !== index);
     setAttributes(updatedAttributes);
   };

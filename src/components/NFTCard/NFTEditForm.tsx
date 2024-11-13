@@ -13,10 +13,11 @@ import {
 import { PublicKey } from "@solana/web3.js";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { Umi } from "@metaplex-foundation/umi";
 
 interface NFTEditFormProps {
   nft: NFT;
-  umi: any;
+  umi: Umi;
 }
 
 export default function NFTEditForm({ nft, umi }: NFTEditFormProps) {
@@ -117,7 +118,7 @@ export default function NFTEditForm({ nft, umi }: NFTEditFormProps) {
     }
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: any) => {
     if (e.target.files) {
       const selectedImage = e.target.files[0];
       setImage(selectedImage);

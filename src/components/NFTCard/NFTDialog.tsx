@@ -13,10 +13,9 @@ import NFTMetadataTab from "./NFTMetadataTab";
 
 interface NFTDialogProps {
   nft: NFT;
-  onBurn: (mintAddress: string) => void;
 }
 
-export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
+export default function NFTDialog({ nft }: NFTDialogProps) {
   const [selectedTab, setSelectedTab] = useState("details");
 
   return (
@@ -61,7 +60,7 @@ export default function NFTDialog({ nft, onBurn }: NFTDialogProps) {
           />
         </TabsList>
         <TabsContent value="details" className="flex-grow overflow-auto">
-          <NFTDetailsTab nft={nft} onBurn={onBurn} />
+          <NFTDetailsTab nft={nft} />
         </TabsContent>
         <TabsContent value="metadata" className="flex-grow">
           <NFTMetadataTab nft={nft} />

@@ -1,9 +1,10 @@
+import { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { Grid, Columns, List } from "lucide-react";
 
 interface ViewModeButtonsProps {
-  viewMode: string;
-  setViewMode: (viewMode: string) => void;
+  viewMode: "large" | "small" | "list";
+  setViewMode: Dispatch<SetStateAction<"large" | "small" | "list">>;
 }
 
 export default function ViewModeButtons({
