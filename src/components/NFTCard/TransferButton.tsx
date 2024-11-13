@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { NFT } from "@/types/NFT";
 import { transferV1 as transferMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { transferV1 as transferCore } from "@metaplex-foundation/mpl-core";
-import { PublicKey } from "@solana/web3.js";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
+import { publicKey as createPublicKey } from "@metaplex-foundation/umi";
 
 interface TransferButtonProps {
   nft: NFT;
@@ -30,8 +30,8 @@ export default function TransferButton({
     setIsTransferring(true);
 
     try {
-      const mint = new PublicKey(nft.mintAddress);
-      const destinationOwner = new PublicKey(recipientAddress);
+      const mint = createPublicKey(nft.mintAddress);
+      const destinationOwner = createPublicKey(recipientAddress);
 
       if (nft.type === "token-metadata") {
         await transferMetadata(umi, {

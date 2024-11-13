@@ -10,7 +10,6 @@ import {
 } from "@metaplex-foundation/mpl-token-metadata";
 import { burn as burnCore, fetchAsset } from "@metaplex-foundation/mpl-core";
 import { publicKey as createPublicKey } from "@metaplex-foundation/umi";
-import { PublicKey } from "@solana/web3.js";
 import { NFT } from "@/types/NFT";
 import { useToast } from "@/hooks/use-toast";
 import { Umi } from "@metaplex-foundation/umi";
@@ -29,11 +28,11 @@ export default function BurnButton({ nft, umi, owner }: BurnButtonProps) {
     try {
       if (nft.type === "token-metadata") {
         // Token Metadata NFT burn
-        const mint = new PublicKey(nft.mintAddress);
+        const mint = createPublicKey(nft.mintAddress);
         await burnTokenMetadataV1(umi, {
           mint,
-          authority: owner.publicKey,
-          tokenOwner: owner.publicKey,
+          authority: umi.identity,
+          tokenOwner: createPublicKey(owner.publicKey),
           tokenStandard: TokenStandard.NonFungible,
         }).sendAndConfirm(umi);
       } else if (nft.type === "core") {
@@ -41,7 +40,7 @@ export default function BurnButton({ nft, umi, owner }: BurnButtonProps) {
         const assetId = createPublicKey(nft.mintAddress);
         const asset = await fetchAsset(umi, assetId);
         await burnCore(umi, {
-          asset: asset,
+          asset,
         }).sendAndConfirm(umi);
       }
 

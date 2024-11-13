@@ -10,10 +10,10 @@ import {
   updateV1,
   fetchMetadataFromSeeds,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { PublicKey } from "@solana/web3.js";
-import { useToast } from "@/hooks/use-toast";
+import { publicKey as createPublicKey } from "@metaplex-foundation/umi";
 import axios from "axios";
 import { Umi } from "@metaplex-foundation/umi";
+import { useToast } from "@/hooks/use-toast";
 
 interface NFTEditFormProps {
   nft: NFT;
@@ -88,12 +88,12 @@ export default function NFTEditForm({ nft, umi }: NFTEditFormProps) {
       const metadataUri = `https://gateway.pinata.cloud/ipfs/${metadataHash}`;
 
       // Fetch initial metadata and update with new URI
-      const mint = new PublicKey(nft.mintAddress);
+      const mint = createPublicKey(nft.mintAddress); // Convert Solana PublicKey to Umi PublicKey
       const initialMetadata = await fetchMetadataFromSeeds(umi, { mint });
 
       await updateV1(umi, {
         mint,
-        authority: umi.identity.publicKey,
+        authority: umi.identity, // Use Umi's identity as the signer
         data: {
           ...initialMetadata,
           name,
