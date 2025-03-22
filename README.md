@@ -1,5 +1,3 @@
-# <img src="public/logo.png" alt="logo" width="45"/> Mintopia
-
 Welcome to this **Solana NFT DApp** – a decentralized platform designed to create and manage NFTs on the Solana blockchain. Built with modern web technologies and powered by the Metaplex ecosystem, this DApp simplifies NFT management with a sleek, user-friendly interface.
 
 ---
