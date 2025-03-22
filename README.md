@@ -1,8 +1,6 @@
 # <img src="public/logo.png" alt="logo" width="45"/> Mintopia
 
-Welcome to **Mintopia** – your decentralized platform to create and manage NFTs on the Solana blockchain. Built with modern web technologies and powered by the Metaplex ecosystem, Mintopia simplifies NFT management with a sleek, user-friendly interface.
-
-🔗 **Live Website:** [Mintopia](https://mintopia.vercel.app/)
+Welcome to this **Solana NFT DApp** – a decentralized platform designed to create and manage NFTs on the Solana blockchain. Built with modern web technologies and powered by the Metaplex ecosystem, this DApp simplifies NFT management with a sleek, user-friendly interface.
 
 ---
 
@@ -35,13 +33,17 @@ Welcome to **Mintopia** – your decentralized platform to create and manage NFT
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 Ensure you have the following installed:
+
 - **Node.js** (v16 or later)
 - **npm**
 - **Solana Wallet** (e.g., Phantom, Solflare)
 
 ### Installation
+
 Clone the repository and install dependencies:
+
 ```bash
 git clone https://github.com/your-username/mintopia.git
 cd mintopia
@@ -49,33 +51,18 @@ npm install
 ```
 
 ### Environment Variables
+
 Create a `.env.local` file in the root directory and configure the following variables:
+
 ```bash
 PINATA_API_KEY=your_pinata_api_key
 PINATA_SECRET_API_KEY=your_pinata_secret_api_key
 ```
 
 ### Run Development Server
+
 ```bash
 npm run dev
 ```
+
 Visit [http://localhost:3000](http://localhost:3000) to explore the app locally.
-
----
-
-## 📅 Future Plans
-
-I'm constantly improving Mintopia! Here’s what’s coming next:
-- **Explore NFTs Beyond Connected Wallets**: Search and explore any NFT on the Solana blockchain.
-- **Bubblegum Metaplex Program**: Support for compressed NFTs, enabling efficient and scalable minting.
-- **Fungible Token Management**: Expand beyond NFTs to include creating, managing, and transferring fungible tokens.
-- **Improved Analytics**: Advanced statistics and insights for your tokenized assets.
-
----
-
-## 🙏 Acknowledgements
-
-Mintopia is built on the shoulders of giants:
-- [Metaplex Foundation](https://www.metaplex.com/)
-- [Solana Foundation](https://solana.com/)
-- [Next.js Team](https://vercel.com/)
