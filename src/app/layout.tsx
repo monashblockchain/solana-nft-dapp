@@ -7,8 +7,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Mintopia",
-  description: "A utopia for minting and managing tokens and collections",
+  title: "Solana NFT dApp",
+  description:
+    "A Solana NFT dApp for minting and managing tokens and collections",
 };
 
 export default function RootLayout({
