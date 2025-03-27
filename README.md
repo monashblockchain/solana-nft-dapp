@@ -57,6 +57,8 @@ PINATA_API_KEY=your_pinata_api_key
 PINATA_SECRET_API_KEY=your_pinata_secret_api_key
 ```
 
+[Pinata API Key](https://pinata.cloud/) is used to upload your image to IPFS when generating the NFT.
+
 ### Run Development Server
 
 ```bash
