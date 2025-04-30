@@ -1,4 +1,4 @@
-Welcome to this **Solana NFT DApp** – a decentralized platform designed to create and manage NFTs on the Solana blockchain. Built with modern web technologies and powered by the Metaplex ecosystem, this DApp simplifies NFT management with a sleek, user-friendly interface.
+Welcome to this **Solana NFT DApp** – a decentralized platform designed to create and manage NFTs on the Solana blockchain. Built with modern web technologies and powered by the Metaplex ecosystem, this DApp simplifies NFT management with a sleek, user-friendly interface
 
 ---
 
